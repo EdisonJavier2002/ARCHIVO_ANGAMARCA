@@ -127,3 +127,12 @@ MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR, 'archivoAngamarca/media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Configuración de correo electrónico
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Host de Gmail
+EMAIL_PORT = 587  # Puerto para TLS
+EMAIL_USE_TLS = True  # Utilizar TLS
+EMAIL_HOST_USER = 'troyaadrian2002@gmail.com'  # Tu dirección de correo electrónico
+EMAIL_HOST_PASSWORD = 'oxrk tgyb zvba utgl'  # Tu contraseña de correo electrónico
+DEFAULT_FROM_EMAIL = 'troyaadrian2002@gmail.com'  # La dirección de correo desde la que se enviarán los correos
