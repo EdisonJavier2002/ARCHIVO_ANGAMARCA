@@ -1,0 +1,117 @@
+<!-- filepath: c:\proyecto-django\ARCHIVO_ANGAMARCA\Aplicaciones\Agenda\templates\reset.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olvidé mi Contraseña</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f6fa;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-top: 15px;
+        }
+
+        label {
+            text-align: left;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #1565C0;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0d47a1;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: none;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .back-link {
+            text-decoration: none;
+            font-size: 14px;
+            color: #1565C0;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>¿Olvidaste tu contraseña?</h2>
+            <p>Te ayudaremos a restablecer tu contraseña</p>
+            <form method="post" action="{% url 'reset' %}">
+                {% csrf_token %}
+                <label for="correo_usu">Correo Electrónico</label>
+                <input type="email" id="correo_usu" name="correo_usu" placeholder="Ingresa tu correo electrónico" required>
+                <button type="submit">Enviar enlace de restablecimiento</button>
+            </form>
+            <hr>
+            <p>¿Recordaste tu contraseña?</p>
+            <a href="{% url 'login' %}" class="back-link">Volver al inicio de sesión</a>
+        </div>
+    </div>
+</body>
+</html>
