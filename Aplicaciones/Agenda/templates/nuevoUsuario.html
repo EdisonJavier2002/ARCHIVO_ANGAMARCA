@@ -1,0 +1,206 @@
+{% extends "./plantilla.html" %}
+
+{% block body %}
+<br><br><br><br>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h5><b>Nuevo Usuario</b></h5>
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'guardarUsuario' %}" method="post" id="frm_nuevo_usuario" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label"><b>Nombre:</b></label>
+                            <input type="text" name="nombre_usu" class="form-control {% if form.nombre_usu.errors %}is-invalid{% endif %}" id="nombre" placeholder="Ingrese el nombre" required>
+                            {% for error in form.nombre_usu.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="apellido" class="form-label"><b>Apellido:</b></label>
+                            <input type="text" name="apellido_usu" class="form-control {% if form.apellido_usu.errors %}is-invalid{% endif %}" id="apellido" placeholder="Ingrese el apellido" required>
+                            {% for error in form.apellido_usu.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="correo" class="form-label"><b>Correo:</b></label>
+                            <input type="email" name="correo_usu" class="form-control {% if form.correo_usu.errors %}is-invalid{% endif %}" id="correo" placeholder="Ingrese el correo" required>
+                            {% for error in form.correo_usu.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="usuario" class="form-label"><b>Usuario:</b></label>
+                            <input type="text" name="usuario_usu" class="form-control {% if form.usuario_usu.errors %}is-invalid{% endif %}" id="usuario" placeholder="Ingrese el nombre de usuario" required>
+                            {% for error in form.usuario_usu.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="contrasena" class="form-label"><b>Contraseña:</b></label>
+                            <div class="input-group">
+                                <input type="password" name="contrasena_usu" class="form-control {% if form.contrasena_usu.errors %}is-invalid{% endif %}" id="contrasena" placeholder="Ingrese la contraseña" required>
+                                <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            {% for error in form.contrasena_usu.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="rol" class="form-label"><b>Rol:</b></label>
+                            <select name="rol_usu" class="form-control {% if form.rol_usu.errors %}is-invalid{% endif %}" id="rol" required>
+                                <option value="admin">Administrador</option>
+                                <option value="usuario">Usuario</option>
+                            </select>
+                            {% for error in form.rol_usu.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="foto" class="form-label"><b>Foto:</b></label>
+                            <input type="file" name="foto" class="form-control {% if form.foto.errors %}is-invalid{% endif %}" id="foto">
+                            {% for error in form.foto.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary btn-lg w-45" id="guardarBtn" disabled><i class="fas fa-save"></i> Guardar</button>
+                            <a href="{% url 'listadoUsuarios' %}" class="btn btn-danger btn-lg w-45 mt-3">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Función para alternar la visibilidad de la contraseña
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            var passwordField = document.getElementById('contrasena');
+            var type = passwordField.type === "password" ? "text" : "password";
+            passwordField.type = type;
+    
+            // Cambiar el icono y el color del botón
+            var icon = this.querySelector('i');
+            if (type === "text") {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+                this.classList.add('btn-warning');
+            } else {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+                this.classList.remove('btn-warning');
+            }
+        });
+    
+        // Validación de campos
+        const formulario = document.getElementById('frm_nuevo_usuario');
+        const botonGuardar = document.getElementById('guardarBtn');
+    
+        formulario.addEventListener('input', function() {
+            let allFilled = true;
+            const nombre = document.getElementById('nombre');
+            const apellido = document.getElementById('apellido');
+            const correo = document.getElementById('correo');
+            const usuario = document.getElementById('usuario');
+            const contrasena = document.getElementById('contrasena');
+            const foto = document.getElementById('foto');
+            const rol = document.getElementById('rol');
+            const regex = /^[A-Za-záéíóúÁÉÍÓÚÑñ ]+$/;
+    
+            // Validar campos nombre y apellido
+            if (!regex.test(nombre.value)) {
+                allFilled = false;
+                nombre.classList.add('is-invalid');
+            } else {
+                nombre.classList.remove('is-invalid');
+            }
+    
+            if (!regex.test(apellido.value)) {
+                allFilled = false;
+                apellido.classList.add('is-invalid');
+            } else {
+                apellido.classList.remove('is-invalid');
+            }
+    
+            // Validar correo
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            if (!emailRegex.test(correo.value)) {
+                allFilled = false;
+                correo.classList.add('is-invalid');
+            } else {
+                correo.classList.remove('is-invalid');
+            }
+    
+            // Validar nombre de usuario
+            if (usuario.value.trim() === "") {
+                allFilled = false;
+                usuario.classList.add('is-invalid');
+            } else {
+                usuario.classList.remove('is-invalid');
+            }
+    
+            // Validar la contraseña
+            if (contrasena.value.length < 6) {
+                allFilled = false;
+                contrasena.classList.add('is-invalid');
+            } else {
+                contrasena.classList.remove('is-invalid');
+            }
+    
+            // Validar rol (ya validado por "required")
+            if (!rol.value) {
+                allFilled = false;
+                rol.classList.add('is-invalid');
+            } else {
+                rol.classList.remove('is-invalid');
+            }
+    
+            // Validar foto
+            if (foto.files.length > 0) {
+                const file = foto.files[0];
+                const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
+                if (!validImageTypes.includes(file.type)) {
+                    allFilled = false;
+                    foto.classList.add('is-invalid');
+                    // Agregar un mensaje de error si el tipo de archivo es incorrecto
+                    foto.setCustomValidity("El archivo debe ser una imagen (JPG, PNG o GIF).");
+                } else {
+                    foto.classList.remove('is-invalid');
+                    foto.setCustomValidity(""); // Limpiar el mensaje de error
+                }
+            } else {
+                foto.classList.add('is-invalid');
+                allFilled = false;
+            }
+    
+            // Si todos los campos son válidos, habilitar el botón
+            if (allFilled) {
+                botonGuardar.disabled = false;
+            } else {
+                botonGuardar.disabled = true;
+            }
+        });
+    });
+    
+</script>
+
+{% endblock %}

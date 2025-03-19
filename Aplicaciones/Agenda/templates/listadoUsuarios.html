@@ -1,0 +1,111 @@
+{% extends "./plantilla.html" %}
+{% load static %}
+
+{% block body %}
+<br><br><br><br>
+<div class="container" style="max-width: 1200px;">
+    <div class="card shadow-lg border-0 rounded-4" style="background-color: #eef1f6;">
+        <div class="card-header text-white text-center" style="background-color: #007bff;">
+            <h3 class="fw-bold mb-0">Listado de Usuarios</h3>
+        </div>
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-3">
+                <a href="{% url 'nuevoUsuario' %}" class="btn btn-success btn-lg"><i class="fas fa-plus-circle"></i> Agregar Usuario</a>
+                <button id="togglePasswordVisibility" class="btn btn-outline-info btn-lg"><i class="fas fa-eye"></i> Mostrar/Ocultar Contraseñas</button>
+            </div>
+            <div class="table-responsive">
+                <div class="container p-3 border rounded" style="background-color: white;">
+                    <table class="table table-hover align-middle" id="tbl-usuarios">
+                        <thead class="text-white" style="background-color: #343a40;">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Correo</th>
+                                <th>Usuario</th>
+                                <th>Contraseña</th>
+                                <th>Rol</th>
+                                <th>Foto</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for usuario in usuarios %}
+                            <tr>
+                                <td class="text-center">{{ usuario.id_usu }}</td>
+                                <td>{{ usuario.nombre_usu }}</td>
+                                <td>{{ usuario.apellido_usu }}</td>
+                                <td>{{ usuario.correo_usu }}</td>
+                                <td>{{ usuario.usuario_usu }}</td>
+                                <td class="contraseña" data-contrasena="{{ usuario.contrasena_usu }}">
+                                    <span class="contraseña-oculta">******</span>
+                                </td>
+                                <td>{{ usuario.rol_usu }}</td>
+                                <td class="text-center">
+                                    {% if usuario.foto %}
+                                        <img src="{{ usuario.foto.url }}" alt="Foto de {{ usuario.nombre_usu }}" class="img-thumbnail" width="50">
+                                    {% else %}
+                                        No disponible
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <a href="{% url 'editarUsuario' usuario.id_usu %}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'eliminarUsuario' usuario.id_usu %}" onclick="return confirm('¿Estás seguro?');" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let table = new DataTable('#tbl-usuarios', {
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+            },
+            "responsive": true,
+            "autoWidth": false
+        });
+
+        // Mostrar u ocultar contraseñas al hacer clic en el botón
+        document.getElementById('togglePasswordVisibility').addEventListener('click', function() {
+            let contraseñas = document.querySelectorAll('.contraseña');
+            let iconoOjos = document.getElementById('togglePasswordVisibility').querySelector('i');
+            let boton = document.getElementById('togglePasswordVisibility');
+
+            contraseñas.forEach(function(element) {
+                if (element.querySelector('.contraseña-oculta').textContent === '******') {
+                    element.querySelector('.contraseña-oculta').textContent = element.getAttribute('data-contrasena');
+                    iconoOjos.classList.remove('fa-eye');
+                    iconoOjos.classList.add('fa-eye-slash');
+                    boton.classList.add('active');  // Cambia el estilo del botón cuando está activo
+                } else {
+                    element.querySelector('.contraseña-oculta').textContent = '******';
+                    iconoOjos.classList.remove('fa-eye-slash');
+                    iconoOjos.classList.add('fa-eye');
+                    boton.classList.remove('active');  // Restaura el estilo cuando está inactivo
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    /* Estilo para el botón activo */
+    #togglePasswordVisibility.active {
+        background-color: #0056b3;  /* Cambiar color del fondo */
+        border-color: #004085;  /* Cambiar color del borde */
+        color: white;  /* Cambiar color del texto */
+    }
+</style>
+
+{% endblock %}
