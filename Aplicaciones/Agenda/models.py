@@ -9,7 +9,7 @@ class Usuario(models.Model):
     usuario_usu = models.CharField(max_length=100, unique=True)
     contrasena_usu = models.CharField(max_length=255)
     rol_usu = models.CharField(max_length=50)
-    imagen_usu = models.ImageField(upload_to='usuarios/', blank=True, null=True)  # Nuevo campo de imagen
+    foto = models.FileField(upload_to='fotoUsuario/', null=True, blank=True)  # Campo de imagen
     
     def __str__(self):
         return f"{self.id_usu}: {self.nombre_usu} {self.apellido_usu} ({self.rol_usu})"
