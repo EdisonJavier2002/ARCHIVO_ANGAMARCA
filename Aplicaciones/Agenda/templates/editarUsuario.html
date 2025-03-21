@@ -115,6 +115,7 @@
         document.getElementById('editarUsuarioForm').addEventListener('submit', function(e) {
             const nombre = document.getElementById('nombre');
             const apellido = document.getElementById('apellido');
+            const contrasena = document.getElementById('contrasena');
             const regex = /^[A-Za-záéíóúÁÉÍÓÚÑñ ]+$/;
 
             if (!regex.test(nombre.value)) {
@@ -131,6 +132,15 @@
                 apellido.classList.add('is-invalid');
             } else {
                 apellido.classList.remove('is-invalid');
+            }
+
+            // Validación para la contraseña
+            if (contrasena.value && contrasena.value.length < 6) {
+                e.preventDefault();  // Prevenir el envío del formulario si hay un error
+                alert("La contraseña debe tener al menos 6 caracteres.");
+                contrasena.classList.add('is-invalid');
+            } else {
+                contrasena.classList.remove('is-invalid');
             }
         });
     });
