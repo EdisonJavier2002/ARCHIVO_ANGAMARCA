@@ -21,6 +21,8 @@
   <script src="//cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
   <!--importando SweetAlert-->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <!-- Otros enlaces a estilos y scripts -->
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
   <!-- AÑADIENDO STATIC-->
   <!-- base:css -->
@@ -75,7 +77,7 @@
           <span></span>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">
+          <a class="nav-link" href="{% url 'listadoUsuarios'%}">
             <i class="mdi mdi-account menu-icon"></i>
             <span class="menu-title">Usuarios</span>
           </a>
@@ -248,18 +250,19 @@
             <li class="nav-item nav-profile dropdown">
               <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
                 <img src="images/faces/face5.jpg" alt="perfil"/>
-                <span class="nav-profile-name">Eleanor Richardson</span>
+                <span class="nav-profile-name">GAD PARRQUIAL ANGAMARCA</span>
               </a>
               <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                <a class="dropdown-item">
-                  <i class="mdi mdi-settings text-primary"></i>
-                  Settings
+                <a class="dropdown-item d-flex align-items-center">
+                    <i class="mdi mdi-settings text-primary me-2"></i>
+                    Ajustes
                 </a>
-                <a class="dropdown-item">
-                  <i class="mdi mdi-logout text-primary"></i>
-                  Logout
+                <a class="dropdown-item d-flex align-items-center" href="{% url 'login' %}">
+                    <i class="mdi mdi-logout text-primary me-2"></i>
+                    Cerrar sesión
                 </a>
-              </div>
+            </div>
+            
             </li>
             <li class="nav-item">
               <a href="#" class="nav-link icon-link">

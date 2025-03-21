@@ -1,106 +1,186 @@
-<!-- filepath: c:\proyecto-django\ARCHIVO_ANGAMARCA\Aplicaciones\Agenda\templates\login.html -->
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Spica Admin</title>
-  <!-- base:css -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión | Spica Admin</title>
   <link rel="stylesheet" href="{% static 'plantilla/spica/vendors/mdi/css/materialdesignicons.min.css' %}">
   <link rel="stylesheet" href="{% static 'plantilla/spica/vendors/css/vendor.bundle.base.css' %}">
-  <!-- endinject -->
-  <!-- plugin css for this page -->
-  <!-- End plugin css for this page -->
-  <!-- inject:css -->
   <link rel="stylesheet" href="{% static 'plantilla/spica/css/style.css' %}">
-  <!-- endinject -->
-  <link rel="shortcut icon" href="{% static 'plantilla/spica/images/favicon.png' %}" />
+  <link rel="shortcut icon" href="{% static 'plantilla/spica/images/favicon.png' %}">
+  <style>
+    /* Fondo con imagen */
+    body {
+      background-image: url("{% static 'img/login_anga.png' %}"); /* Define la imagen de fondo */
+      background-size: 75% auto; /* Reduce el tamaño de la imagen al 80% de su tamaño original */
+      background-repeat: no-repeat; /* Evita que la imagen se repita si es más pequeña que el contenedor */
+      background-position: center center; /* Asegura que la imagen esté centrada en la pantalla */
+      background-attachment: fixed; /* Hace que la imagen de fondo permanezca fija al hacer scroll */
+      display: flex; /* Utiliza Flexbox para alinear los elementos */
+      justify-content: center; /* Centra el contenido horizontalmente */
+      align-items: center; /* Centra el contenido verticalmente */
+      height: 100vh; /* Hace que el cuerpo ocupe toda la altura de la ventana */
+      margin: 0; /* Elimina el margen por defecto del body */
+      position: relative; /* Permite colocar otros elementos sobre el fondo con posicionamiento */
+    }
+    
+    /* Capa oscura para mejorar legibilidad */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+    }
+
+    /* Contenedor del login */
+    .login-container {
+      background: rgba(255, 255, 255, 0.85);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-container h2 {
+      color: #2d2d2d;
+      font-family: 'Arial', sans-serif;
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+
+    /* Estilos de los inputs */
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      transition: 0.3s;
+    }
+
+    .input-group input:focus {
+      border-color: #28a745; /* Verde para el borde */
+      outline: none;
+      box-shadow: 0 0 10px rgba(40, 167, 69, 0.5); /* Sombra verde */
+    }
+
+    /* Estilo para el icono de ocultar/mostrar contraseña */
+    .input-group .toggle-password {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #007bff; /* Azul brillante para que resalte */
+      font-size: 1.5em; /* Aumentar el tamaño del icono */
+      transition: color 0.3s, transform 0.3s; /* Efecto de transición para color y transformaciones */
+    }
+
+    /* Efecto al pasar el ratón sobre el icono */
+    .input-group .toggle-password:hover {
+      color: #28a745; /* Verde brillante al hacer hover */
+    }
+
+    /* Icono cuando el campo de contraseña está en modo oculto */
+    .input-group .toggle-password.mdi-eye-outline {
+      color: #007bff; /* Azul brillante cuando está en modo oculto */
+    }
+
+    /* Icono cuando el campo de contraseña está en modo visible */
+    .input-group .toggle-password.mdi-eye-off-outline {
+      color: #28a745; /* Verde brillante cuando está en modo visible */
+    }
+
+    /* Botón de login */
+    .btn-login {
+      background: #28a745; /* Verde */
+      color: white;
+      padding: 12px;
+      width: 100%;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-login:hover {
+      background: #218838; /* Verde más oscuro */
+    }
+
+    /* Enlace para recuperación de contraseña */
+    .forgot-password {
+      display: block;
+      margin-top: 10px;
+      color: #ffc107; /* Amarillo */
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
-
 <body>
-  <div class="container-scroller d-flex">
-    <div class="container-fluid page-body-wrapper full-page-wrapper d-flex">
-      <div class="content-wrapper d-flex align-items-stretch auth auth-img-bg">
-        <div class="row flex-grow">
-          <div class="col-lg-6 d-flex align-items-center justify-content-center">
-            <div class="auth-form-transparent text-left p-3">
-              <div class="brand-logo">
-                <img src="{% static 'plantilla/spica/images/logo.svg' %}" alt="logo">
-              </div>
-              <h4>Welcome back!</h4>
-              <h6 class="font-weight-light">Happy to see you again!</h6>
-              <form class="pt-3" method="post" action="{% url 'login' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                  <label for="usuario_usu">Username</label>
-                  <div class="input-group">
-                    <div class="input-group-prepend bg-transparent">
-                      <span class="input-group-text bg-transparent border-right-0">
-                        <i class="mdi mdi-account-outline text-primary"></i>
-                      </span>
-                    </div>
-                    <input type="text" class="form-control form-control-lg border-left-0" id="usuario_usu" name="usuario_usu" placeholder="Username" required>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="contrasena_usu">Password</label>
-                  <div class="input-group">
-                    <div class="input-group-prepend bg-transparent">
-                      <span class="input-group-text bg-transparent border-right-0">
-                        <i class="mdi mdi-lock-outline text-primary"></i>
-                      </span>
-                    </div>
-                    <input type="password" class="form-control form-control-lg border-left-0" id="contrasena_usu" name="contrasena_usu" placeholder="Password" required>
-                  </div>
-                </div>
-                <div class="my-2 d-flex justify-content-between align-items-center">
-                  <div class="form-check">
-                    <label class="form-check-label text-muted">
-                      <input type="checkbox" class="form-check-input">
-                      Keep me signed in
-                    </label>
-                  </div>
-                  <a href="{% url 'reset' %}" class="auth-link text-black">¿Olvidaste tu Contraseña?</a>
-                </div>
-                <div class="my-3">
-                  <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">LOGIN</button>
-                </div>
-                <div class="mb-1 d-flex">
-                  <button type="button" class="btn btn-google auth-form-btn flex-grow ml-1">
-                    <i class="mdi mdi-google mr-2"></i>Google
-                  </button>
-                </div>
-              </form>
-              {% if messages %}
-                <ul>
-                  {% for message in messages %}
-                    <li>{{ message }}</li>
-                  {% endfor %}
-                </ul>
-              {% endif %}
-            </div>
-          </div>
-          <div class="col-lg-6 login-half-bg d-none d-lg-flex flex-row">
-            <p class="text-white font-weight-medium text-center flex-grow align-self-end">Copyright &copy; 2018  All rights reserved.</p>
-          </div>
-        </div>
+  <div class="login-container">
+    <h2>Iniciar Sesión</h2>
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      
+      <div class="input-group">
+        <input type="text" id="usuario_usu" name="usuario_usu" placeholder="Usuario" required>
       </div>
-      <!-- content-wrapper ends -->
-    </div>
-    <!-- page-body-wrapper ends -->
+      
+      <div class="input-group">
+        <input type="password" id="contrasena_usu" name="contrasena_usu" placeholder="Contraseña" required>
+        <span class="toggle-password mdi mdi-eye-outline" onclick="togglePassword()"></span>
+      </div>
+      
+      <button type="submit" class="btn-login">Ingresar</button>
+      
+      <a href="{% url 'reset' %}" class="forgot-password">¿Olvidaste tu contraseña?</a>
+    </form>
   </div>
-  <!-- container-scroller -->
-  <!-- base:js -->
-  <script src="{% static 'plantilla/spica/vendors/js/vendor.bundle.base.js' %}"></script>
-  <!-- endinject -->
-  <!-- inject:js -->
-  <script src="{% static 'plantilla/spica/js/off-canvas.js' %}"></script>
-  <script src="{% static 'plantilla/spica/js/hoverable-collapse.js' %}"></script>
-  <script src="{% static 'plantilla/spica/js/template.js' %}"></script>
-  <!-- endinject -->
-</body>
+  
+  <script>
+    function togglePassword() {
+      var passwordField = document.getElementById("contrasena_usu");
+      var toggleIcon = document.querySelector(".toggle-password");
+      if (passwordField.type === "password") {
+        passwordField.type = "text";
+        toggleIcon.classList.replace("mdi-eye-outline", "mdi-eye-off-outline");
+      } else {
+        passwordField.type = "password";
+        toggleIcon.classList.replace("mdi-eye-off-outline", "mdi-eye-outline");
+      }
+    }
 
+    // Limpiar los campos del formulario al cargar la página
+    window.onload = function() {
+      document.getElementById("usuario_usu").value = "";
+      document.getElementById("contrasena_usu").value = "";
+    }
+
+    // Limpiar los campos del formulario cuando se muestra la página (incluyendo cuando se navega hacia atrás)
+    window.addEventListener('pageshow', function(event) {
+      if (event.persisted) {
+        document.getElementById("usuario_usu").value = "";
+        document.getElementById("contrasena_usu").value = "";
+      }
+    });
+  </script>
+</body>
 </html>

@@ -2,6 +2,84 @@
 {% load static %}
 {% block body %}
 
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="{% static 'img/c1.jpg' %}" class="d-block w-100" alt="No se encuentra">
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'img/c2.jpg' %}" class="d-block w-100" alt="...">
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'img/c3.jpg' %}" class="d-block w-100" alt="...">
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
 
+<!-- Poner una mision y vision-->
+<style>
+  .section-title {
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 2.5rem;
+      color: #343a40;
+  }
+  .card {
+      margin-bottom: 20px;
+  }
+  .card-body {
+      padding: 30px;
+  }
+  .card-title {
+      font-size: 1.75rem;
+      color: #007bff;
+  }
+  .card-text {
+      font-size: 1.1rem;
+      color: #6c757d;
+  }
+</style>
+<div class="container mt-5" >
+  <h2 class="section-title">Nuestra Misión y Visión</h2>
+  <div class="row" style="background-color: rgb(25, 95, 194);">
+      <div class="col-md-6">
+          <div class="card shadow-sm">
+              <div class="card-body" style="text-align: center;">
+                  <h5 class="card-title">Misión</h5>
+                  <p class="card-text" style="text-align: justify;">
+                      Nuestra misión es proporcionar una experiencia cinematográfica de calidad, ofreciendo una amplia variedad de películas para todos los gustos y edades, en un entorno confortable y moderno. Nos comprometemos a crear un espacio donde el entretenimiento y la cultura se encuentren, y donde cada visita sea una experiencia inolvidable.
+                  </p>
+                  <br>
+                  <img style="width: 400px; height: 200px;"  src="https://unitedone.com/wp-content/uploads/2021/06/United-One-Resources-Mission-Vision.png" alt="">
+              </div>
+          </div>
+      </div>
+      <div class="col-md-6">
+          <div class="card shadow-sm">
+              <div class="card-body" style="text-align: center;">
+                  <h5 class="card-title">Visión</h5>
+                  <p class="card-text" style="text-align: justify;">
+                      Nuestra visión es ser el cine líder en innovación y calidad en la industria del entretenimiento, reconocido por su excelente servicio al cliente y su compromiso con la comunidad. Aspiramos a ser un referente en la promoción del arte cinematográfico y en la creación de experiencias emocionantes y significativas para nuestro público.
+                  </p>
+                  <br>
+                  <img style="width: 400px; height: 200px;" src="https://media.licdn.com/dms/image/C5612AQGX-fkQWo0eFA/article-inline_image-shrink_1000_1488/0/1538281568905?e=1722470400&v=beta&t=2z4gANaMPTZOxCK1-Fp2r0e51aTzDkrmbvfNsO6AiKs" alt="">
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
 
 {% endblock %}

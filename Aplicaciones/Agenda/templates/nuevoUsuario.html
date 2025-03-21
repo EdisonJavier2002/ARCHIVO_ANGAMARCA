@@ -92,13 +92,11 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Función para alternar la visibilidad de la contraseña
         document.getElementById('togglePassword').addEventListener('click', function() {
             var passwordField = document.getElementById('contrasena');
             var type = passwordField.type === "password" ? "text" : "password";
             passwordField.type = type;
     
-            // Cambiar el icono y el color del botón
             var icon = this.querySelector('i');
             if (type === "text") {
                 icon.classList.remove('fa-eye');
@@ -111,7 +109,6 @@
             }
         });
     
-        // Validación de campos
         const formulario = document.getElementById('frm_nuevo_usuario');
         const botonGuardar = document.getElementById('guardarBtn');
     
@@ -126,7 +123,6 @@
             const rol = document.getElementById('rol');
             const regex = /^[A-Za-záéíóúÁÉÍÓÚÑñ ]+$/;
     
-            // Validar campos nombre y apellido
             if (!regex.test(nombre.value)) {
                 allFilled = false;
                 nombre.classList.add('is-invalid');
@@ -141,7 +137,6 @@
                 apellido.classList.remove('is-invalid');
             }
     
-            // Validar correo
             const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
             if (!emailRegex.test(correo.value)) {
                 allFilled = false;
@@ -150,7 +145,6 @@
                 correo.classList.remove('is-invalid');
             }
     
-            // Validar nombre de usuario
             if (usuario.value.trim() === "") {
                 allFilled = false;
                 usuario.classList.add('is-invalid');
@@ -158,7 +152,6 @@
                 usuario.classList.remove('is-invalid');
             }
     
-            // Validar la contraseña
             if (contrasena.value.length < 6) {
                 allFilled = false;
                 contrasena.classList.add('is-invalid');
@@ -166,7 +159,6 @@
                 contrasena.classList.remove('is-invalid');
             }
     
-            // Validar rol (ya validado por "required")
             if (!rol.value) {
                 allFilled = false;
                 rol.classList.add('is-invalid');
@@ -174,25 +166,22 @@
                 rol.classList.remove('is-invalid');
             }
     
-            // Validar foto
             if (foto.files.length > 0) {
                 const file = foto.files[0];
                 const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
                 if (!validImageTypes.includes(file.type)) {
                     allFilled = false;
                     foto.classList.add('is-invalid');
-                    // Agregar un mensaje de error si el tipo de archivo es incorrecto
                     foto.setCustomValidity("El archivo debe ser una imagen (JPG, PNG o GIF).");
                 } else {
                     foto.classList.remove('is-invalid');
-                    foto.setCustomValidity(""); // Limpiar el mensaje de error
+                    foto.setCustomValidity("");
                 }
             } else {
                 foto.classList.add('is-invalid');
                 allFilled = false;
             }
     
-            // Si todos los campos son válidos, habilitar el botón
             if (allFilled) {
                 botonGuardar.disabled = false;
             } else {
@@ -200,7 +189,6 @@
             }
         });
     });
-    
 </script>
 
 {% endblock %}

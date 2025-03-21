@@ -8,6 +8,8 @@ def home(request):
     return render(request, 'home.html')
 
 def reset(request):
+    email_sent = False
+    
     if request.method == 'POST':
         correo_usu = request.POST.get('correo_usu')
         try:
@@ -15,6 +17,7 @@ def reset(request):
             new_password = get_random_string(8)
             user.contrasena_usu = new_password
             user.save()
+            
             send_mail(
                 'Recuperación de contraseña',
                 f'Su nueva contraseña es: {new_password}',
@@ -22,11 +25,14 @@ def reset(request):
                 [correo_usu],
                 fail_silently=False,
             )
+            
             messages.success(request, 'Se ha enviado una nueva contraseña a su correo electrónico.')
-            return redirect('login')
+            email_sent = True
+
         except Usuario.DoesNotExist:
             messages.error(request, 'No se encontró un usuario con ese correo electrónico.')
-    return render(request, 'reset.html')
+
+    return render(request, 'reset.html', {'email_sent': email_sent})
 
 def login(request):
     if request.method == 'POST':
@@ -37,7 +43,7 @@ def login(request):
             user = Usuario.objects.only('usuario_usu', 'contrasena_usu').get(usuario_usu=usuario_usu)
             if contrasena_usu == user.contrasena_usu:
                 request.session['user_id'] = user.id_usu
-                return redirect('home')  # Redirige a la vista 'home'
+                return redirect('home')
             else:
                 messages.error(request, 'Contraseña incorrecta')
         except Usuario.DoesNotExist:
@@ -47,29 +53,23 @@ def login(request):
 
 #----------------------------------------USUARIOS-------------------------
 
-# Listar Usuarios
 def listadoUsuarios(request):
     usuarios = Usuario.objects.all()
     return render(request, "listadoUsuarios.html", {'usuarios': usuarios})
 
-# Eliminar Usuario
 def eliminarUsuario(request, id):
     usuarioEliminar = get_object_or_404(Usuario, id_usu=id)
     usuarioEliminar.delete()
     messages.success(request, "Usuario eliminado exitosamente.")
     return redirect('listadoUsuarios')
 
-# Formulario Nuevo Usuario
 def nuevoUsuario(request):
     return render(request, 'nuevoUsuario.html')
 
-
-# Formulario Editar Usuario
 def editarUsuario(request, id):
     usuarioEditar = get_object_or_404(Usuario, id_usu=id)
     return render(request, 'editarUsuario.html', {'usuarioEditar': usuarioEditar})
 
-# Formulario Guardar Usuario
 def guardarUsuario(request):
     nombre = request.POST["nombre_usu"]
     apellido = request.POST["apellido_usu"]
@@ -79,7 +79,6 @@ def guardarUsuario(request):
     rol = request.POST["rol_usu"]
     imagen = request.FILES.get("foto")
 
-    # Validaciones
     if not correo or '@' not in correo:
         messages.error(request, "El correo electrónico no es válido.")
         return redirect('nuevoUsuario')
@@ -87,12 +86,10 @@ def guardarUsuario(request):
         messages.error(request, "La contraseña debe tener al menos 6 caracteres.")
         return redirect('nuevoUsuario')
 
-    # Verificar si el nombre de usuario ya existe
     if Usuario.objects.filter(usuario_usu=usuario).exists():
         messages.error(request, "El nombre de usuario ya está registrado.")
         return redirect('nuevoUsuario')
 
-    # Crear usuario
     Usuario.objects.create(
         nombre_usu=nombre,
         apellido_usu=apellido,
@@ -105,28 +102,25 @@ def guardarUsuario(request):
     messages.success(request, "Usuario registrado exitosamente.")
     return redirect('listadoUsuarios')
 
-# Actualizar Usuario
 def procesarActualizacionUsuario(request):
     id = request.POST['id_usu']
     nombre = request.POST['nombre_usu']
     apellido = request.POST['apellido_usu']
     correo = request.POST['correo_usu']
     usuario = request.POST['usuario_usu']
-    contrasena = request.POST.get('contrasena_usu', None)  # Usa get para que no cause error si no se ingresa
+    contrasena = request.POST.get('contrasena_usu', None)
     rol = request.POST['rol_usu']
     imagen = request.FILES.get('foto')
 
     usuarioConsultado = get_object_or_404(Usuario, id_usu=id)
 
-    # Validaciones
     if not correo or '@' not in correo:
         messages.error(request, "El correo electrónico no es válido.")
         return redirect('editarUsuario', id=id)
-    if contrasena and len(contrasena) < 6:  # Solo valida la contraseña si se ha ingresado una nueva
+    if contrasena and len(contrasena) < 6:
         messages.error(request, "La contraseña debe tener al menos 6 caracteres.")
         return redirect('editarUsuario', id=id)
 
-    # Actualizar solo los cambios
     cambios = False
     if usuarioConsultado.nombre_usu != nombre:
         usuarioConsultado.nombre_usu = nombre
@@ -140,7 +134,7 @@ def procesarActualizacionUsuario(request):
     if usuarioConsultado.usuario_usu != usuario:
         usuarioConsultado.usuario_usu = usuario
         cambios = True
-    if contrasena:  # Solo cambia la contraseña si se ingresó una nueva
+    if contrasena:
         usuarioConsultado.contrasena_usu = contrasena
         cambios = True
     if usuarioConsultado.rol_usu != rol:
