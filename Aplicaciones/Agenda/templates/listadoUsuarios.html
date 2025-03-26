@@ -1,4 +1,4 @@
-{% extends "./plantilla.html" %}
+{% extends "plantilla.html" %}
 {% load static %}
 
 {% block body %}
@@ -10,7 +10,6 @@
         </div>
         <div class="card-body">
             <div class="d-flex justify-content-between mb-3">
-                <!-- Botón para abrir el modal de Nuevo Usuario -->
                 <button class="btn btn-success btn-lg" id="nuevoUsuarioBtn" data-url="{% url 'nuevoUsuario' %}" data-bs-toggle="modal" data-bs-target="#usuarioModal">
                     <i class="fas fa-plus-circle"></i> Agregar Usuario
                 </button>
@@ -52,7 +51,6 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-center">
-                                    <!-- Botón para abrir el modal de Editar Usuario -->
                                     <button class="btn btn-warning btn-sm editarUsuarioBtn" data-url="{% url 'editarUsuario' usuario.id_usu %}" data-bs-toggle="modal" data-bs-target="#usuarioModal">
                                         <i class="fas fa-edit"></i>
                                     </button>
@@ -79,7 +77,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Aquí se cargará dinámicamente el contenido -->
                 <div id="modalContent"></div>
             </div>
         </div>
@@ -150,12 +147,36 @@
 </script>
 
 <style>
-    /* Estilo para el botón activo */
-    #togglePasswordVisibility.active {
-        background-color: #0056b3;
-        border-color: #004085;
-        color: white;
+    /* Estilo para el efecto hover en las filas de la tabla */
+    #tbl-usuarios tbody tr:hover {
+        background-color: #007bff; /* Fondo azul claro cuando pasa el mouse */
+        color: white; /* Cambia el color del texto a blanco cuando pasa el mouse */
+        cursor: pointer; /* Cambia el cursor a puntero para indicar que es interactivo */
     }
+
+    /* Cambia el color de texto o bordes de las celdas al pasar el mouse */
+    #tbl-usuarios tbody tr:hover td {
+        background-color: #007bff; /* Fondo azul claro en las celdas al pasar el mouse */
+        color: white; /* Cambia el color del texto a blanco en las celdas */
+    }
+
+    /* Estilo para los bordes de las celdas */
+    #tbl-usuarios th, #tbl-usuarios td {
+        border: 2px solid #000000; /* Bordes más gruesos y de color negro */
+    }
+
+    /* Estilo para la cabecera de la tabla */
+    #tbl-usuarios thead {
+        background-color: #343a40; /* Fondo oscuro para la cabecera */
+        color: white; /* Color blanco para el texto */
+    }
+
+    /* Estilo para el fondo de la tabla */
+    .table-responsive {
+        border: 2px solid #000000; /* Añadir un borde negro a la tabla completa */
+        border-radius: 8px; /* Bordes redondeados en la tabla */
+    }
+
 </style>
 
 {% endblock %}
