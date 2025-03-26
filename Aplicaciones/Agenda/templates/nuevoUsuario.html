@@ -1,194 +1,149 @@
-{% extends "./plantilla.html" %}
-
-{% block body %}
-<br><br><br><br>
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white text-center">
-                    <h5><b>Nuevo Usuario</b></h5>
-                </div>
-                <div class="card-body">
-                    <form action="{% url 'guardarUsuario' %}" method="post" id="frm_nuevo_usuario" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label"><b>Nombre:</b></label>
-                            <input type="text" name="nombre_usu" class="form-control {% if form.nombre_usu.errors %}is-invalid{% endif %}" id="nombre" placeholder="Ingrese el nombre" required>
-                            {% for error in form.nombre_usu.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="apellido" class="form-label"><b>Apellido:</b></label>
-                            <input type="text" name="apellido_usu" class="form-control {% if form.apellido_usu.errors %}is-invalid{% endif %}" id="apellido" placeholder="Ingrese el apellido" required>
-                            {% for error in form.apellido_usu.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="correo" class="form-label"><b>Correo:</b></label>
-                            <input type="email" name="correo_usu" class="form-control {% if form.correo_usu.errors %}is-invalid{% endif %}" id="correo" placeholder="Ingrese el correo" required>
-                            {% for error in form.correo_usu.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="usuario" class="form-label"><b>Usuario:</b></label>
-                            <input type="text" name="usuario_usu" class="form-control {% if form.usuario_usu.errors %}is-invalid{% endif %}" id="usuario" placeholder="Ingrese el nombre de usuario" required>
-                            {% for error in form.usuario_usu.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="contrasena" class="form-label"><b>Contraseña:</b></label>
-                            <div class="input-group">
-                                <input type="password" name="contrasena_usu" class="form-control {% if form.contrasena_usu.errors %}is-invalid{% endif %}" id="contrasena" placeholder="Ingrese la contraseña" required>
-                                <button type="button" class="btn btn-outline-secondary" id="togglePassword">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                            {% for error in form.contrasena_usu.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="rol" class="form-label"><b>Rol:</b></label>
-                            <select name="rol_usu" class="form-control {% if form.rol_usu.errors %}is-invalid{% endif %}" id="rol" required>
-                                <option value="admin">Administrador</option>
-                                <option value="usuario">Usuario</option>
-                            </select>
-                            {% for error in form.rol_usu.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="foto" class="form-label"><b>Foto:</b></label>
-                            <input type="file" name="foto" class="form-control {% if form.foto.errors %}is-invalid{% endif %}" id="foto">
-                            {% for error in form.foto.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary btn-lg w-45" id="guardarBtn" disabled><i class="fas fa-save"></i> Guardar</button>
-                            <a href="{% url 'listadoUsuarios' %}" class="btn btn-danger btn-lg w-45 mt-3">
-                                <i class="fas fa-arrow-left"></i> Cancelar
-                            </a>
-                        </div>
-                    </form>
-                </div>
+<!-- Formulario de Nuevo Usuario -->
+<form action="{% url 'guardarUsuario' %}" method="post" id="frm_nuevo_usuario" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <!-- Columna 1 -->
+        <div class="col-md-6 mb-3">
+            <label for="nombre" class="form-label"></i> Nombre</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <input type="text" name="nombre_usu" class="form-control" id="nombre" placeholder="Ingrese el nombre" required>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="apellido" class="form-label"></i> Apellido</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <input type="text" name="apellido_usu" class="form-control" id="apellido" placeholder="Ingrese el apellido" required>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="correo" class="form-label"></i> Correo</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input type="email" name="correo_usu" class="form-control" id="correo" placeholder="Ingrese el correo" required>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="usuario" class="form-label"></i> Nombre de Usuario</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user-circle"></i></span>
+                <input type="text" name="usuario_usu" class="form-control" id="usuario" placeholder="Ingrese el nombre de usuario" required>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="password" class="form-label"></i> Contraseña</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" name="password_usu" class="form-control" id="password" placeholder="Ingrese la contraseña" required>
+                <button type="button" class="btn btn-outline-secondary" id="togglePasswordNuevo" title="Mostrar contraseña">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="rol" class="form-label"></i> Rol</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user-shield"></i></span>
+                <select name="rol_usu" class="form-control" id="rol" required>
+                    <option value="admin">Administrador</option>
+                    <option value="usuario">Usuario</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="foto" class="form-label"></i> Foto de Perfil</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-image"></i></span>
+                <input type="file" name="foto" class="form-control" id="foto" onchange="previewImage(event)">
+            </div>
+            <div id="imagePreview" class="mt-2">
+                <!-- Aquí se mostrará la vista previa de la imagen cargada -->
             </div>
         </div>
     </div>
-</div>
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-success btn-lg"><i class="fas fa-save"></i> Guardar</button>
+        <button type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+    </div>
+</form>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            var passwordField = document.getElementById('contrasena');
-            var type = passwordField.type === "password" ? "text" : "password";
-            passwordField.type = type;
-    
-            var icon = this.querySelector('i');
-            if (type === "text") {
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-                this.classList.add('btn-warning');
-            } else {
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-                this.classList.remove('btn-warning');
-            }
-        });
-    
-        const formulario = document.getElementById('frm_nuevo_usuario');
-        const botonGuardar = document.getElementById('guardarBtn');
-    
-        formulario.addEventListener('input', function() {
-            let allFilled = true;
-            const nombre = document.getElementById('nombre');
-            const apellido = document.getElementById('apellido');
-            const correo = document.getElementById('correo');
-            const usuario = document.getElementById('usuario');
-            const contrasena = document.getElementById('contrasena');
-            const foto = document.getElementById('foto');
-            const rol = document.getElementById('rol');
-            const regex = /^[A-Za-záéíóúÁÉÍÓÚÑñ ]+$/;
-    
-            if (!regex.test(nombre.value)) {
-                allFilled = false;
-                nombre.classList.add('is-invalid');
-            } else {
-                nombre.classList.remove('is-invalid');
-            }
-    
-            if (!regex.test(apellido.value)) {
-                allFilled = false;
-                apellido.classList.add('is-invalid');
-            } else {
-                apellido.classList.remove('is-invalid');
-            }
-    
-            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-            if (!emailRegex.test(correo.value)) {
-                allFilled = false;
-                correo.classList.add('is-invalid');
-            } else {
-                correo.classList.remove('is-invalid');
-            }
-    
-            if (usuario.value.trim() === "") {
-                allFilled = false;
-                usuario.classList.add('is-invalid');
-            } else {
-                usuario.classList.remove('is-invalid');
-            }
-    
-            if (contrasena.value.length < 6) {
-                allFilled = false;
-                contrasena.classList.add('is-invalid');
-            } else {
-                contrasena.classList.remove('is-invalid');
-            }
-    
-            if (!rol.value) {
-                allFilled = false;
-                rol.classList.add('is-invalid');
-            } else {
-                rol.classList.remove('is-invalid');
-            }
-    
-            if (foto.files.length > 0) {
-                const file = foto.files[0];
-                const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
-                if (!validImageTypes.includes(file.type)) {
-                    allFilled = false;
-                    foto.classList.add('is-invalid');
-                    foto.setCustomValidity("El archivo debe ser una imagen (JPG, PNG o GIF).");
+        const togglePasswordButton = document.getElementById("togglePasswordNuevo");
+        const passwordField = document.getElementById("password");
+        
+        if (togglePasswordButton && passwordField) {
+            togglePasswordButton.addEventListener("click", function() {
+                if (passwordField.type === "password") {
+                    passwordField.type = "text"; // Mostrar contraseña
+                    togglePasswordButton.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                    togglePasswordButton.setAttribute("title", "Ocultar contraseña");
                 } else {
-                    foto.classList.remove('is-invalid');
-                    foto.setCustomValidity("");
+                    passwordField.type = "password"; // Ocultar contraseña
+                    togglePasswordButton.innerHTML = '<i class="fas fa-eye"></i>';
+                    togglePasswordButton.setAttribute("title", "Mostrar contraseña");
                 }
-            } else {
-                foto.classList.add('is-invalid');
-                allFilled = false;
-            }
-    
-            if (allFilled) {
-                botonGuardar.disabled = false;
-            } else {
-                botonGuardar.disabled = true;
-            }
-        });
+            });
+        }
     });
+
+    // Función para previsualizar la imagen cargada
+    function previewImage(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function() {
+            const previewContainer = document.getElementById("imagePreview");
+            previewContainer.innerHTML = '<img src="' + reader.result + '" alt="Vista previa de la imagen" class="img-thumbnail" width="200">';
+        };
+        
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
 </script>
 
-{% endblock %}
+<style>
+    .input-group-text {
+        background-color:rgb(48, 154, 36);
+        color: white;
+    }
+    .input-group-text i {
+        transition: color 0.3s ease;
+    }
+    .input-group-text:hover i {
+        color: #ffffff;
+    }
+
+    #togglePasswordNuevo:hover {
+        background-color: #e9ecef;
+        cursor: pointer;
+    }
+    
+    #togglePasswordNuevo i {
+        transition: color 0.3s ease;
+    }
+    
+    #togglePasswordNuevo:hover i {
+        color: #007bff;
+    }
+
+    .btn-success {
+        background-color: #28a745; /* Color verde */
+        border-color: #28a745;
+    }
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+    .btn-danger {
+        background-color: #dc3545; /* Color rojo */
+        border-color: #dc3545;
+    }
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+</style>

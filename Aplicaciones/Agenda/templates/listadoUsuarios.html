@@ -10,7 +10,10 @@
         </div>
         <div class="card-body">
             <div class="d-flex justify-content-between mb-3">
-                <a href="{% url 'nuevoUsuario' %}" class="btn btn-success btn-lg"><i class="fas fa-plus-circle"></i> Agregar Usuario</a>
+                <!-- Botón para abrir el modal de Nuevo Usuario -->
+                <button class="btn btn-success btn-lg" id="nuevoUsuarioBtn" data-url="{% url 'nuevoUsuario' %}" data-bs-toggle="modal" data-bs-target="#usuarioModal">
+                    <i class="fas fa-plus-circle"></i> Agregar Usuario
+                </button>
                 <button id="togglePasswordVisibility" class="btn btn-outline-info btn-lg"><i class="fas fa-eye"></i> Mostrar/Ocultar Contraseñas</button>
             </div>
             <div class="table-responsive">
@@ -49,9 +52,10 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-center">
-                                    <a href="{% url 'editarUsuario' usuario.id_usu %}" class="btn btn-warning btn-sm">
+                                    <!-- Botón para abrir el modal de Editar Usuario -->
+                                    <button class="btn btn-warning btn-sm editarUsuarioBtn" data-url="{% url 'editarUsuario' usuario.id_usu %}" data-bs-toggle="modal" data-bs-target="#usuarioModal">
                                         <i class="fas fa-edit"></i>
-                                    </a>
+                                    </button>
                                     <a href="{% url 'eliminarUsuario' usuario.id_usu %}" onclick="return confirm('¿Estás seguro?');" class="btn btn-danger btn-sm">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
@@ -66,35 +70,81 @@
     </div>
 </div>
 
+<!-- Modal Genérico -->
+<div class="modal fade" id="usuarioModal" tabindex="-1" aria-labelledby="usuarioModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="usuarioModalLabel">Título del Modal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Aquí se cargará dinámicamente el contenido -->
+                <div id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Inicializar DataTable
         let table = new DataTable('#tbl-usuarios', {
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
-            },
             "responsive": true,
             "autoWidth": false
         });
 
-        // Mostrar u ocultar contraseñas al hacer clic en el botón
+        // Mostrar u ocultar contraseñas
         document.getElementById('togglePasswordVisibility').addEventListener('click', function() {
             let contraseñas = document.querySelectorAll('.contraseña');
             let iconoOjos = document.getElementById('togglePasswordVisibility').querySelector('i');
             let boton = document.getElementById('togglePasswordVisibility');
 
             contraseñas.forEach(function(element) {
-                if (element.querySelector('.contraseña-oculta').textContent === '******') {
-                    element.querySelector('.contraseña-oculta').textContent = element.getAttribute('data-contrasena');
+                let spanOculto = element.querySelector('.contraseña-oculta');
+                let valorContraseña = element.getAttribute('data-contrasena');
+
+                if (spanOculto.textContent === '******') {
+                    // Mostrar contraseña
+                    spanOculto.textContent = valorContraseña;
                     iconoOjos.classList.remove('fa-eye');
                     iconoOjos.classList.add('fa-eye-slash');
-                    boton.classList.add('active');  // Cambia el estilo del botón cuando está activo
+                    boton.classList.add('active');
                 } else {
-                    element.querySelector('.contraseña-oculta').textContent = '******';
+                    // Ocultar contraseña
+                    spanOculto.textContent = '******';
                     iconoOjos.classList.remove('fa-eye-slash');
                     iconoOjos.classList.add('fa-eye');
-                    boton.classList.remove('active');  // Restaura el estilo cuando está inactivo
+                    boton.classList.remove('active');
                 }
             });
+        });
+
+        // Cargar contenido dinámico en el modal
+        document.querySelectorAll('[data-bs-toggle="modal"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                const modalTitle = this.id === 'nuevoUsuarioBtn' ? 'Nuevo Usuario' : 'Editar Usuario';
+
+                // Cambiar el título del modal
+                document.getElementById('usuarioModalLabel').textContent = modalTitle;
+
+                // Cargar contenido dinámico
+                fetch(url)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('modalContent').innerHTML = html;
+                    })
+                    .catch(error => {
+                        document.getElementById('modalContent').innerHTML = '<p class="text-danger">Error al cargar el contenido.</p>';
+                        console.error('Error al cargar el modal:', error);
+                    });
+            });
+        });
+
+        // Limpiar contenido del modal al cerrarlo
+        document.getElementById('usuarioModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('modalContent').innerHTML = '';
         });
     });
 </script>
@@ -102,9 +152,9 @@
 <style>
     /* Estilo para el botón activo */
     #togglePasswordVisibility.active {
-        background-color: #0056b3;  /* Cambiar color del fondo */
-        border-color: #004085;  /* Cambiar color del borde */
-        color: white;  /* Cambiar color del texto */
+        background-color: #0056b3;
+        border-color: #004085;
+        color: white;
     }
 </style>
 

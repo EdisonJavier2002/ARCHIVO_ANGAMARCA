@@ -1,149 +1,153 @@
-{% extends "./plantilla.html" %}
+<!-- Formulario de Editar Usuario -->
+<form action="{% url 'procesarActualizacionUsuario' %}" method="post" id="frm_editar_usuario" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="id_usu" value="{{ usuarioEditar.id_usu }}">
 
-{% block body %}
-<br><br><br><br>
-
-<div class="container-fluid">
-    <div class="row justify-content-center"> 
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow-sm border-light mb-4">
-                <div class="card-header bg-primary text-white text-center">
-                    <h5><b>Editar Información del Usuario</b></h5>
-                </div>
-                <div class="card-body">
-                    <form id="editarUsuarioForm" action="{% url 'procesarActualizacionUsuario' %}" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <input type="hidden" name="id_usu" value="{{ usuarioEditar.id_usu }}">
-
-                        <!-- Campo Nombre -->
-                        <div class="mb-3">
-                            <label><b>Nombre:</b></label>
-                            <input type="text" name="nombre_usu" value="{{ usuarioEditar.nombre_usu }}" class="form-control" id="nombre" required>
-                            <div class="invalid-feedback">El nombre solo debe contener letras.</div>
-                        </div>
-
-                        <!-- Campo Apellido -->
-                        <div class="mb-3">
-                            <label><b>Apellido:</b></label>
-                            <input type="text" name="apellido_usu" value="{{ usuarioEditar.apellido_usu }}" class="form-control" id="apellido" required>
-                            <div class="invalid-feedback">El apellido solo debe contener letras.</div>
-                        </div>
-
-                        <!-- Campo Correo -->
-                        <div class="mb-3">
-                            <label><b>Correo:</b></label>
-                            <input type="email" name="correo_usu" value="{{ usuarioEditar.correo_usu }}" class="form-control" id="correo" required>
-                            <div class="invalid-feedback">Ingrese un correo electrónico válido.</div>
-                        </div>
-
-                        <!-- Campo Usuario -->
-                        <div class="mb-3">
-                            <label><b>Usuario:</b></label>
-                            <input type="text" name="usuario_usu" value="{{ usuarioEditar.usuario_usu }}" class="form-control" id="usuario" required>
-                            <div class="invalid-feedback">El usuario no puede estar vacío.</div>
-                        </div>
-
-                        <!-- Campo Contraseña -->
-                        <div class="mb-3">
-                            <label><b>Contraseña:</b></label>
-                            <div class="input-group">
-                                <input type="password" name="contrasena_usu" class="form-control" id="contrasena">
-                                <button type="button" class="btn btn-outline-secondary" id="togglePassword">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                            <small class="form-text text-muted">Dejar en blanco si no desea cambiar la contraseña.</small>
-                            <div class="invalid-feedback">La contraseña debe tener al menos 6 caracteres.</div>
-                        </div>
-
-                        <!-- Campo Rol -->
-                        <div class="mb-3">
-                            <label><b>Rol:</b></label>
-                            <select name="rol_usu" class="form-control" required>
-                                <option value="admin" {% if usuarioEditar.rol_usu == 'admin' %}selected{% endif %}>Administrador</option>
-                                <option value="usuario" {% if usuarioEditar.rol_usu == 'usuario' %}selected{% endif %}>Usuario</option>
-                            </select>
-                        </div>
-
-                        <!-- Campo Foto -->
-                        <div class="mb-3">
-                            <label><b>Foto:</b></label>
-                            <input type="file" name="foto" class="form-control" id="foto">
-                            {% if usuarioEditar.foto %}
-                                <img src="{{ usuarioEditar.foto.url }}" alt="Foto de {{ usuarioEditar.nombre_usu }}" class="img-thumbnail mt-2" width="150">
-                            {% endif %}
-                        </div>
-
-                        <!-- Botones de acción -->
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-warning btn-lg">
-                                <i class="fas fa-save"></i> Actualizar
-                            </button>
-                            <a href="{% url 'listadoUsuarios' %}" class="btn btn-danger btn-lg">
-                                <i class="fas fa-arrow-left"></i> Cancelar
-                            </a>
-                        </div>
-                    </form>
-                </div>
+    <div class="row">
+        <!-- Nombre -->
+        <div class="col-md-6 mb-3">
+            <label for="nombre" class="form-label"></i> <b>Nombre:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <input type="text" name="nombre_usu" value="{{ usuarioEditar.nombre_usu }}" class="form-control" id="nombre" placeholder="Ingrese el nombre" required>
             </div>
+            <div class="invalid-feedback">El nombre solo debe contener letras.</div>
+        </div>
+
+        <!-- Apellido -->
+        <div class="col-md-6 mb-3">
+            <label for="apellido" class="form-label"></i> <b>Apellido:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <input type="text" name="apellido_usu" value="{{ usuarioEditar.apellido_usu }}" class="form-control" id="apellido" placeholder="Ingrese el apellido" required>
+            </div>
+            <div class="invalid-feedback">El apellido solo debe contener letras.</div>
+        </div>
+
+        <!-- Correo -->
+        <div class="col-md-6 mb-3">
+            <label for="correo" class="form-label"></i> <b>Correo:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input type="email" name="correo_usu" value="{{ usuarioEditar.correo_usu }}" class="form-control" id="correo" placeholder="Ingrese el correo" required>
+            </div>
+            <div class="invalid-feedback">Ingrese un correo válido.</div>
+        </div>
+
+        <!-- Usuario -->
+        <div class="col-md-6 mb-3">
+            <label for="usuario" class="form-label"></i> <b>Usuario:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user-circle"></i></span>
+                <input type="text" name="usuario_usu" value="{{ usuarioEditar.usuario_usu }}" class="form-control" id="usuario" placeholder="Ingrese el nombre de usuario" required>
+            </div>
+            <div class="invalid-feedback">El usuario no puede estar vacío.</div>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="col-md-6 mb-3">
+            <label for="contrasena" class="form-label"></i> <b>Contraseña:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" name="contrasena_usu" class="form-control" id="contrasena" placeholder="Ingrese la nueva contraseña (opcional)">
+                <button type="button" class="btn btn-outline-secondary" id="togglePasswordEditar">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            <small class="form-text text-muted">Dejar en blanco si no desea cambiar la contraseña.</small>
+            <div class="invalid-feedback">La contraseña debe tener al menos 6 caracteres.</div>
+        </div>
+
+        <!-- Rol -->
+        <div class="col-md-6 mb-3">
+            <label for="rol" class="form-label"></i> <b>Rol:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-users-cog"></i></span>
+                <select name="rol_usu" class="form-control" id="rol" required>
+                    <option value="admin" {% if usuarioEditar.rol_usu == 'admin' %}selected{% endif %}>Administrador</option>
+                    <option value="usuario" {% if usuarioEditar.rol_usu == 'usuario' %}selected{% endif %}>Usuario</option>
+                </select>
+            </div>
+            <div class="invalid-feedback">Debe seleccionar un rol.</div>
+        </div>
+
+        <!-- Foto -->
+        <div class="col-md-6 mb-3">
+            <label for="foto" class="form-label"></i> <b>Foto:</b></label>
+            <input type="file" name="foto" class="form-control" id="foto">
+            {% if usuarioEditar.foto %}
+                <img src="{{ usuarioEditar.foto.url }}" alt="Foto de {{ usuarioEditar.nombre_usu }}" class="img-thumbnail mt-2" width="150">
+            {% endif %}
         </div>
     </div>
-</div>
+
+    <!-- Botones -->
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-warning btn-lg"><i class="fas fa-save"></i> Actualizar</button>
+        <button type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+    </div>
+</form>
 
 <script>
-    // Función para alternar la visibilidad de la contraseña
-    document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            var passwordField = document.getElementById('contrasena');
-            var type = passwordField.type === "password" ? "text" : "password";
+    document.addEventListener("DOMContentLoaded", function () {
+        // Alternar visibilidad de la contraseña
+        document.getElementById('togglePasswordEditar').addEventListener('click', function () {
+            const passwordField = document.getElementById('contrasena');
+            const type = passwordField.type === "password" ? "text" : "password";
             passwordField.type = type;
 
-            // Cambiar el icono y el color del botón
-            var icon = this.querySelector('i');
+            const icon = this.querySelector('i');
             if (type === "text") {
                 icon.classList.remove('fa-eye');
                 icon.classList.add('fa-eye-slash');
-                this.classList.add('btn-warning'); // Cambia el color del botón a amarillo cuando la contraseña está visible
             } else {
                 icon.classList.remove('fa-eye-slash');
                 icon.classList.add('fa-eye');
-                this.classList.remove('btn-warning'); // Vuelve al color original
-            }
-        });
-
-        // Validación para Nombre y Apellido
-        document.getElementById('editarUsuarioForm').addEventListener('submit', function(e) {
-            const nombre = document.getElementById('nombre');
-            const apellido = document.getElementById('apellido');
-            const contrasena = document.getElementById('contrasena');
-            const regex = /^[A-Za-záéíóúÁÉÍÓÚÑñ ]+$/;
-
-            if (!regex.test(nombre.value)) {
-                e.preventDefault();  // Prevenir el envío del formulario si hay un error
-                alert("El nombre solo debe contener letras.");
-                nombre.classList.add('is-invalid');
-            } else {
-                nombre.classList.remove('is-invalid');
-            }
-
-            if (!regex.test(apellido.value)) {
-                e.preventDefault();  // Prevenir el envío del formulario si hay un error
-                alert("El apellido solo debe contener letras.");
-                apellido.classList.add('is-invalid');
-            } else {
-                apellido.classList.remove('is-invalid');
-            }
-
-            // Validación para la contraseña
-            if (contrasena.value && contrasena.value.length < 6) {
-                e.preventDefault();  // Prevenir el envío del formulario si hay un error
-                alert("La contraseña debe tener al menos 6 caracteres.");
-                contrasena.classList.add('is-invalid');
-            } else {
-                contrasena.classList.remove('is-invalid');
             }
         });
     });
 </script>
 
-{% endblock %}
+<style>
+    .input-group-text {
+        background-color:rgb(48, 154, 36);
+        color: white;
+    }
+    .input-group-text i {
+        transition: color 0.3s ease;
+    }
+    .input-group-text:hover i {
+        color: #ffffff;
+    }
+
+    #togglePasswordEditar:hover {
+        background-color: #e9ecef;
+        cursor: pointer;
+    }
+    
+    #togglePasswordEditar i {
+        transition: color 0.3s ease;
+    }
+    
+    #togglePasswordEditar:hover i {
+        color: #007bff;
+    }
+
+    .btn-warning {
+        background-color: #ffc107; /* Amarillo */
+        border-color: #ffc107;
+    }
+    .btn-warning:hover {
+        background-color: #e0a800;
+        border-color: #d39e00;
+    }
+
+    .btn-danger {
+        background-color: #dc3545; /* Rojo */
+        border-color: #dc3545;
+    }
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+</style>

@@ -1,11 +1,33 @@
+from sendgrid.helpers.mail import Mail
+from sendgrid import SendGridAPIClient
+import os  # Añadir esta línea
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.core.mail import send_mail, BadHeaderError
 from django.utils.crypto import get_random_string
 from .models import Usuario
+from sendgrid import SendGridAPIClient
+from .utils import get_email_settings
+from django.core.mail.backends.smtp import EmailBackend
+from django.conf import settings
+from decouple import config
 
 def home(request):
     return render(request, 'home.html')
+
+def send_reset_email(user_email):
+    message = Mail(
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to_emails=user_email,
+        subject='Restablecer tu contraseña',
+        html_content='<p>Haz clic en este <a href="#">enlace</a> para restablecer tu contraseña.</p>'
+    )
+    try:
+        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+        response = sg.send(message)
+        print(response.status_code)
+    except Exception as e:
+        print(f'Error al enviar correo: {e}')
 
 def reset(request):
     email_sent = False
@@ -13,26 +35,80 @@ def reset(request):
     if request.method == 'POST':
         correo_usu = request.POST.get('correo_usu')
         try:
+            # Verificar si el correo está registrado
             user = Usuario.objects.get(correo_usu=correo_usu)
             new_password = get_random_string(8)
             user.contrasena_usu = new_password
             user.save()
-            
-            send_mail(
-                'Recuperación de contraseña',
-                f'Su nueva contraseña es: {new_password}',
-                'noreply@tu-dominio.com',
-                [correo_usu],
-                fail_silently=False,
+
+            # Envío del correo
+            subject = 'Recuperación de contraseña'
+            message = f'Su nueva contraseña es: {new_password}'
+            from_email = config('DEFAULT_FROM_EMAIL')
+            to_emails = correo_usu
+
+            mail = Mail(
+                from_email=from_email,
+                to_emails=to_emails,
+                subject=subject,
+                plain_text_content=message
             )
-            
-            messages.success(request, 'Se ha enviado una nueva contraseña a su correo electrónico.')
-            email_sent = True
+
+            try:
+                sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
+                response = sg.send(mail)
+                if response.status_code == 202:
+                    messages.success(request, 'Se ha enviado una nueva contraseña a su correo electrónico.')
+                    email_sent = True
+                else:
+                    messages.error(request, 'No se pudo enviar el correo electrónico.')
+            except Exception as e:
+                messages.error(request, f'Ocurrió un error al enviar el correo: {e}')
 
         except Usuario.DoesNotExist:
             messages.error(request, 'No se encontró un usuario con ese correo electrónico.')
+        except Exception as e:
+            messages.error(request, f'Ocurrió un error: {e}')
 
     return render(request, 'reset.html', {'email_sent': email_sent})
+
+def get_email_settings(email_user):
+    """
+    Función que devuelve la configuración SMTP basada en el dominio del usuario de correo.
+    Debe retornar configuraciones de correo según el dominio.
+    """
+    if '@gmail.com' in email_user:
+        return {
+            "EMAIL_HOST": "smtp.gmail.com",
+            "EMAIL_PORT": 587,
+            "EMAIL_USE_TLS": True,
+            "EMAIL_HOST_USER": email_user,
+            "EMAIL_HOST_PASSWORD": os.getenv("GMAIL_PASSWORD"),  # Usar variable de entorno
+        }
+    elif '@yahoo.com' in email_user:
+        return {
+            "EMAIL_HOST": "smtp.mail.yahoo.com",
+            "EMAIL_PORT": 587,
+            "EMAIL_USE_TLS": True,
+            "EMAIL_HOST_USER": email_user,
+            "EMAIL_HOST_PASSWORD": os.getenv("YAHOO_PASSWORD"),  # Usar variable de entorno
+        }
+    elif '@outlook.com' in email_user or '@hotmail.com' in email_user:
+        return {
+            "EMAIL_HOST": "smtp.office365.com",
+            "EMAIL_PORT": 587,
+            "EMAIL_USE_TLS": True,
+            "EMAIL_HOST_USER": email_user,
+            "EMAIL_HOST_PASSWORD": os.getenv("OUTLOOK_PASSWORD"),  # Usar variable de entorno
+        }
+    else:
+        return {
+            "EMAIL_HOST": "smtp.dominio.com",
+            "EMAIL_PORT": 587,
+            "EMAIL_USE_TLS": True,
+            "EMAIL_HOST_USER": "usuario@dominio.com",
+            "EMAIL_HOST_PASSWORD": os.getenv("CUSTOM_EMAIL_PASSWORD"),  # Usar variable de entorno
+        }
 
 def login(request):
     if request.method == 'POST':
@@ -50,6 +126,7 @@ def login(request):
             messages.error(request, 'Usuario no encontrado')
 
     return render(request, 'login.html')
+
 
 #----------------------------------------USUARIOS-------------------------
 
@@ -71,83 +148,78 @@ def editarUsuario(request, id):
     return render(request, 'editarUsuario.html', {'usuarioEditar': usuarioEditar})
 
 def guardarUsuario(request):
-    nombre = request.POST["nombre_usu"]
-    apellido = request.POST["apellido_usu"]
-    correo = request.POST["correo_usu"]
-    usuario = request.POST["usuario_usu"]
-    contrasena = request.POST["contrasena_usu"]
-    rol = request.POST["rol_usu"]
-    imagen = request.FILES.get("foto")
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre_usu', '').strip()
+        apellido = request.POST.get('apellido_usu', '').strip()
+        correo = request.POST.get('correo_usu', '').strip()
+        usuario = request.POST.get('usuario_usu', '').strip()
+        contrasena = request.POST.get('contrasena_usu', '').strip()
+        rol = request.POST.get('rol_usu', '').strip()
+        foto = request.FILES.get('foto')
 
-    if not correo or '@' not in correo:
-        messages.error(request, "El correo electrónico no es válido.")
-        return redirect('nuevoUsuario')
-    if len(contrasena) < 6:
-        messages.error(request, "La contraseña debe tener al menos 6 caracteres.")
-        return redirect('nuevoUsuario')
+        # Validar que todos los campos estén llenos
+        if not all([nombre, apellido, correo, usuario, contrasena, rol, foto]):
+            messages.error(request, 'Todos los campos son obligatorios.')
+            return redirect('nuevoUsuario')
 
-    if Usuario.objects.filter(usuario_usu=usuario).exists():
-        messages.error(request, "El nombre de usuario ya está registrado.")
-        return redirect('nuevoUsuario')
+        # Guardar el usuario en la base de datos
+        nuevo_usuario = Usuario(
+            nombre_usu=nombre,
+            apellido_usu=apellido,
+            correo_usu=correo,
+            usuario_usu=usuario,
+            contrasena_usu=contrasena,
+            rol_usu=rol,
+            foto=foto
+        )
+        nuevo_usuario.save()
 
-    Usuario.objects.create(
-        nombre_usu=nombre,
-        apellido_usu=apellido,
-        correo_usu=correo,
-        usuario_usu=usuario,
-        contrasena_usu=contrasena,
-        rol_usu=rol,
-        foto=imagen
-    )
-    messages.success(request, "Usuario registrado exitosamente.")
-    return redirect('listadoUsuarios')
+        messages.success(request, 'Usuario guardado exitosamente.')
+        return redirect('listadoUsuarios')
+    else:
+        return redirect('nuevoUsuario')
 
 def procesarActualizacionUsuario(request):
-    id = request.POST['id_usu']
-    nombre = request.POST['nombre_usu']
-    apellido = request.POST['apellido_usu']
-    correo = request.POST['correo_usu']
-    usuario = request.POST['usuario_usu']
-    contrasena = request.POST.get('contrasena_usu', None)
-    rol = request.POST['rol_usu']
-    imagen = request.FILES.get('foto')
+    if request.method == 'POST':
+        id_usu = request.POST.get('id_usu')
+        usuario = get_object_or_404(Usuario, id_usu=id_usu)
 
-    usuarioConsultado = get_object_or_404(Usuario, id_usu=id)
+        nombre = request.POST.get('nombre_usu', '').strip()
+        apellido = request.POST.get('apellido_usu', '').strip()
+        correo = request.POST.get('correo_usu', '').strip()
+        usuario_usu = request.POST.get('usuario_usu', '').strip()
+        contrasena = request.POST.get('contrasena_usu', '').strip()
+        rol = request.POST.get('rol_usu', '').strip()
+        foto = request.FILES.get('foto')
 
-    if not correo or '@' not in correo:
-        messages.error(request, "El correo electrónico no es válido.")
-        return redirect('editarUsuario', id=id)
-    if contrasena and len(contrasena) < 6:
-        messages.error(request, "La contraseña debe tener al menos 6 caracteres.")
-        return redirect('editarUsuario', id=id)
+        if not nombre.isalpha():
+            messages.error(request, "El nombre solo debe contener letras.")
+            return redirect('editarUsuario', id_usu=id_usu)
 
-    cambios = False
-    if usuarioConsultado.nombre_usu != nombre:
-        usuarioConsultado.nombre_usu = nombre
-        cambios = True
-    if usuarioConsultado.apellido_usu != apellido:
-        usuarioConsultado.apellido_usu = apellido
-        cambios = True
-    if usuarioConsultado.correo_usu != correo:
-        usuarioConsultado.correo_usu = correo
-        cambios = True
-    if usuarioConsultado.usuario_usu != usuario:
-        usuarioConsultado.usuario_usu = usuario
-        cambios = True
-    if contrasena:
-        usuarioConsultado.contrasena_usu = contrasena
-        cambios = True
-    if usuarioConsultado.rol_usu != rol:
-        usuarioConsultado.rol_usu = rol
-        cambios = True
-    if imagen:
-        usuarioConsultado.foto = imagen
-        cambios = True
+        if not apellido.isalpha():
+            messages.error(request, "El apellido solo debe contener letras.")
+            return redirect('editarUsuario', id_usu=id_usu)
 
-    if cambios:
-        usuarioConsultado.save()
+        if '@' not in correo:
+            messages.error(request, "El correo no es válido.")
+            return redirect('editarUsuario', id_usu=id_usu)
+
+        if contrasena and len(contrasena) < 6:
+            messages.error(request, "La contraseña debe tener al menos 6 caracteres.")
+            return redirect('editarUsuario', id_usu=id_usu)
+
+        usuario.nombre_usu = nombre
+        usuario.apellido_usu = apellido
+        usuario.correo_usu = correo
+        usuario.usuario_usu = usuario_usu
+        usuario.rol_usu = rol
+
+        if contrasena:
+            usuario.contrasena_usu = contrasena
+
+        if foto:
+            usuario.foto = foto
+
+        usuario.save()
         messages.success(request, "Usuario actualizado exitosamente.")
-    else:
-        messages.info(request, "No se realizaron cambios.")
-
-    return redirect('listadoUsuarios')
+        return redirect('listadoUsuarios')
