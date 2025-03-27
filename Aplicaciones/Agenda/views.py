@@ -72,44 +72,6 @@ def reset(request):
 
     return render(request, 'reset.html', {'email_sent': email_sent})
 
-def get_email_settings(email_user):
-    """
-    Función que devuelve la configuración SMTP basada en el dominio del usuario de correo.
-    Debe retornar configuraciones de correo según el dominio.
-    """
-    if '@gmail.com' in email_user:
-        return {
-            "EMAIL_HOST": "smtp.gmail.com",
-            "EMAIL_PORT": 587,
-            "EMAIL_USE_TLS": True,
-            "EMAIL_HOST_USER": email_user,
-            "EMAIL_HOST_PASSWORD": os.getenv("GMAIL_PASSWORD"),  # Usar variable de entorno
-        }
-    elif '@yahoo.com' in email_user:
-        return {
-            "EMAIL_HOST": "smtp.mail.yahoo.com",
-            "EMAIL_PORT": 587,
-            "EMAIL_USE_TLS": True,
-            "EMAIL_HOST_USER": email_user,
-            "EMAIL_HOST_PASSWORD": os.getenv("YAHOO_PASSWORD"),  # Usar variable de entorno
-        }
-    elif '@outlook.com' in email_user or '@hotmail.com' in email_user:
-        return {
-            "EMAIL_HOST": "smtp.office365.com",
-            "EMAIL_PORT": 587,
-            "EMAIL_USE_TLS": True,
-            "EMAIL_HOST_USER": email_user,
-            "EMAIL_HOST_PASSWORD": os.getenv("OUTLOOK_PASSWORD"),  # Usar variable de entorno
-        }
-    else:
-        return {
-            "EMAIL_HOST": "smtp.dominio.com",
-            "EMAIL_PORT": 587,
-            "EMAIL_USE_TLS": True,
-            "EMAIL_HOST_USER": "usuario@dominio.com",
-            "EMAIL_HOST_PASSWORD": os.getenv("CUSTOM_EMAIL_PASSWORD"),  # Usar variable de entorno
-        }
-
 def login(request):
     if request.method == 'POST':
         usuario_usu = request.POST.get('usuario_usu')
@@ -119,6 +81,7 @@ def login(request):
             user = Usuario.objects.only('usuario_usu', 'contrasena_usu').get(usuario_usu=usuario_usu)
             if contrasena_usu == user.contrasena_usu:
                 request.session['user_id'] = user.id_usu
+                messages.success(request, f'Bienvenido, {user.usuario_usu}!')  # Mensaje de bienvenida
                 return redirect('home')
             else:
                 messages.error(request, 'Contraseña incorrecta')
@@ -126,7 +89,6 @@ def login(request):
             messages.error(request, 'Usuario no encontrado')
 
     return render(request, 'login.html')
-
 
 #----------------------------------------USUARIOS-------------------------
 

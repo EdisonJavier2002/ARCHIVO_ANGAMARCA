@@ -182,5 +182,37 @@
       }
     });
   </script>
+  
 </body>
+{% if messages %}
+    <div class="alert-container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+<style>
+  .alert-container {
+      margin-bottom: 20px;
+  }
+
+  .alert {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      font-size: 16px;
+      color: #fff;
+  }
+
+  .alert-success {
+      background-color: #28a745;  /* Verde */
+  }
+
+  .alert-error {
+      background-color: #dc3545;  /* Rojo */
+  }
+</style>
+
 </html>
