@@ -1,0 +1,95 @@
+<!-- Formulario de Editar Asignación de Tiempo -->
+<form action="{% url 'procesarActualizacionAsignacion' %}" method="post" id="frm_editar_asignacion">
+    {% csrf_token %}
+    <input type="hidden" name="id_asi" value="{{ asignacionEditar.id_asi }}">
+
+    <div class="row">
+        <!-- Documento -->
+        <div class="col-md-6 mb-3">
+            <label for="documento" class="form-label"><b>Documento:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-file-alt"></i></span>
+                <select name="id_doc" class="form-control" id="documento" required>
+                    <option value="">Seleccione un documento</option>
+                    {% for documento in documentos %}
+                        <option value="{{ documento.id_doc }}" {% if asignacionEditar.id_doc.id_doc == documento.id_doc %}selected{% endif %}>{{ documento.titulo_doc }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Usuario Asignador -->
+        <div class="col-md-6 mb-3">
+            <label for="usuario_asignador" class="form-label"><b>Usuario Asignador:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <select name="id_usu_asignador" class="form-control" id="usuario_asignador" required>
+                    <option value="">Seleccione un usuario asignador</option>
+                    {% for usuario in usuarios %}
+                        <option value="{{ usuario.id_usu }}" {% if asignacionEditar.id_usu_asignador.id_usu == usuario.id_usu %}selected{% endif %}>{{ usuario.nombre_usu }} {{ usuario.apellido_usu }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Usuario Asignado -->
+        <div class="col-md-6 mb-3">
+            <label for="usuario_asignado" class="form-label"><b>Usuario Asignado:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <select name="id_usu_asignado" class="form-control" id="usuario_asignado" required>
+                    <option value="">Seleccione un usuario asignado</option>
+                    {% for usuario in usuarios %}
+                        <option value="{{ usuario.id_usu }}" {% if asignacionEditar.id_usu_asignado.id_usu == usuario.id_usu %}selected{% endif %}>{{ usuario.nombre_usu }} {{ usuario.apellido_usu }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Fecha Límite -->
+        <div class="col-md-6 mb-3">
+            <label for="fecha_limite" class="form-label"><b>Fecha Límite:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                <input type="date" name="fecha_limite_asi" value="{{ asignacionEditar.fecha_limite_asi }}" class="form-control" id="fecha_limite" required>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-warning btn-lg"><i class="fas fa-save"></i> Actualizar</button>
+        <button type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+    </div>
+</form>
+
+<script>
+    // Agregar funcionalidades si es necesario
+</script>
+
+<style>
+    .input-group-text {
+        background-color: rgb(48, 154, 36);
+        color: white;
+    }
+
+    .btn-warning {
+        background-color: #ffc107; /* Amarillo */
+        border-color: #ffc107;
+    }
+
+    .btn-warning:hover {
+        background-color: #e0a800;
+        border-color: #d39e00;
+    }
+
+    .btn-danger {
+        background-color: #dc3545; /* Rojo */
+        border-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+</style>

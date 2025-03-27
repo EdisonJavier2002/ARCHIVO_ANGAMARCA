@@ -1,0 +1,54 @@
+<!-- Formulario de Editar Categoría -->
+<form action="{% url 'procesarActualizacionCategoria' %}" method="post" id="frm_editar_categoria">
+    {% csrf_token %}
+    <input type="hidden" name="id_cat" value="{{ categoriaEditar.id_cat }}">
+
+    <div class="row">
+        <!-- Nombre de la Categoría -->
+        <div class="col-md-6 mb-3">
+            <label for="nombre_cat" class="form-label"><b>Nombre de la Categoría:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                <input type="text" name="nombre_cat" value="{{ categoriaEditar.nombre_cat }}" class="form-control" id="nombre_cat" placeholder="Ingrese el nombre de la categoría" required>
+            </div>
+            <div class="invalid-feedback">El nombre de la categoría no puede estar vacío.</div>
+        </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-warning btn-lg"><i class="fas fa-save"></i> Actualizar</button>
+        <button type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+    </div>
+</form>
+
+<style>
+    .input-group-text {
+        background-color: rgb(48, 154, 36);
+        color: white;
+    }
+    .input-group-text i {
+        transition: color 0.3s ease;
+    }
+    .input-group-text:hover i {
+        color: #ffffff;
+    }
+
+    .btn-warning {
+        background-color: #ffc107; /* Amarillo */
+        border-color: #ffc107;
+    }
+    .btn-warning:hover {
+        background-color: #e0a800;
+        border-color: #d39e00;
+    }
+
+    .btn-danger {
+        background-color: #dc3545; /* Rojo */
+        border-color: #dc3545;
+    }
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+</style>

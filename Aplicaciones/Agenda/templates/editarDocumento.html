@@ -1,0 +1,153 @@
+<!-- Formulario de Editar Documento -->
+<form action="{% url 'procesarActualizacionDocumento' %}" method="post" id="frm_editar_documento">
+    {% csrf_token %}
+    <input type="hidden" name="id_doc" value="{{ documentoEditar.id_doc }}">
+
+    <div class="row">
+        <!-- Título -->
+        <div class="col-md-6 mb-3">
+            <label for="titulo" class="form-label"><b>Título:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-file-alt"></i></span>
+                <input type="text" name="titulo_doc" value="{{ documentoEditar.titulo_doc }}" class="form-control" id="titulo" placeholder="Ingrese el título" required>
+            </div>
+        </div>
+
+        <!-- Descripción -->
+        <div class="col-md-6 mb-3">
+            <label for="descripcion" class="form-label"><b>Descripción:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-pencil-alt"></i></span>
+                <textarea name="descripcion_doc" class="form-control" id="descripcion" placeholder="Ingrese la descripción">{{ documentoEditar.descripcion_doc }}</textarea>
+            </div>
+        </div>
+
+        <!-- Tipo de Documento -->
+        <div class="col-md-6 mb-3">
+            <label for="tipo" class="form-label"><b>Tipo de Documento:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-file"></i></span>
+                <select name="tipo_doc" class="form-control" id="tipo" required>
+                    <option value="informe" {% if documentoEditar.tipo_doc == 'informe' %}selected{% endif %}>Informe</option>
+                    <option value="acta" {% if documentoEditar.tipo_doc == 'acta' %}selected{% endif %}>Acta</option>
+                    <option value="resolucion" {% if documentoEditar.tipo_doc == 'resolucion' %}selected{% endif %}>Resolución</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Categoría -->
+        <div class="col-md-6 mb-3">
+            <label for="categoria" class="form-label"><b>Categoría:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                <select name="id_cat" class="form-control" id="categoria" required>
+                    <option value="">Seleccione una categoría</option>
+                    {% for categoria in categorias %}
+                        <option value="{{ categoria.id_cat }}" {% if documentoEditar.id_cat.id_cat == categoria.id_cat %}selected{% endif %}>{{ categoria.nombre_cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Usuario -->
+        <div class="col-md-6 mb-3">
+            <label for="usuario" class="form-label"><b>Usuario:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <select name="id_usu" class="form-control" id="usuario" required>
+                    <option value="">Seleccione un usuario</option>
+                    {% for usuario in usuarios %}
+                        <option value="{{ usuario.id_usu }}" {% if documentoEditar.id_usu.id_usu == usuario.id_usu %}selected{% endif %}>{{ usuario.nombre_usu }} {{ usuario.apellido_usu }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Estado del Documento -->
+        <div class="col-md-6 mb-3">
+            <label for="estado" class="form-label"><b>Estado del Documento:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
+                <select name="estado_doc" class="form-control" id="estado" required>
+                    <option value="en tiempo" {% if documentoEditar.estado_doc == 'en tiempo' %}selected{% endif %}>En Tiempo</option>
+                    <option value="retrasado" {% if documentoEditar.estado_doc == 'retrasado' %}selected{% endif %}>Retrasado</option>
+                    <option value="incumplido" {% if documentoEditar.estado_doc == 'incumplido' %}selected{% endif %}>Incumplido</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Fecha de Asignación -->
+        <div class="col-md-6 mb-3">
+            <label for="fecha_asignacion" class="form-label"><b>Fecha de Asignación:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                <input type="date" name="fecha_asignacion_doc" value="{{ documentoEditar.fecha_asignacion_doc }}" class="form-control" id="fecha_asignacion">
+            </div>
+        </div>
+
+        <!-- Fecha de Entrega -->
+        <div class="col-md-6 mb-3">
+            <label for="fecha_entrega" class="form-label"><b>Fecha de Entrega:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
+                <input type="date" name="fecha_entrega_doc" value="{{ documentoEditar.fecha_entrega_doc }}" class="form-control" id="fecha_entrega">
+            </div>
+        </div>
+
+        <!-- Fecha de Subida (solo para informes) -->
+        <div class="col-md-6 mb-3">
+            <label for="fecha_subida" class="form-label"><b>Fecha de Subida:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-upload"></i></span>
+                <input type="text" name="fecha_subida_doc" value="{{ documentoEditar.fecha_subida_doc }}" class="form-control" id="fecha_subida" disabled>
+            </div>
+        </div>
+
+        <!-- Fecha Límite (solo para informes) -->
+        <div class="col-md-6 mb-3">
+            <label for="fecha_limite" class="form-label"><b>Fecha Límite:</b></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                <input type="date" name="fecha_limite_doc" value="{{ documentoEditar.fecha_limite_doc }}" class="form-control" id="fecha_limite">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Botones -->
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-warning btn-lg"><i class="fas fa-save"></i> Actualizar</button>
+        <button type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+    </div>
+</form>
+
+<script>
+    // Agregar funcionalidades si es necesario
+</script>
+
+<style>
+    .input-group-text {
+        background-color: rgb(48, 154, 36);
+        color: white;
+    }
+
+    .btn-warning {
+        background-color: #ffc107; /* Amarillo */
+        border-color: #ffc107;
+    }
+
+    .btn-warning:hover {
+        background-color: #e0a800;
+        border-color: #d39e00;
+    }
+
+    .btn-danger {
+        background-color: #dc3545; /* Rojo */
+        border-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+</style>

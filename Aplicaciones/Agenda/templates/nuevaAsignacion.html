@@ -1,0 +1,93 @@
+<!-- Formulario de Nueva Asignación -->
+<form action="{% url 'guardarAsignacion' %}" method="post" id="frm_nueva_asignacion">
+    {% csrf_token %}
+    <div class="row">
+        <!-- Columna 1 -->
+        <div class="col-md-6 mb-3">
+            <label for="documento" class="form-label">Documento</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-file-alt"></i></span>
+                <select name="id_doc" class="form-control" id="documento" required>
+                    <option value="">Seleccione un documento</option>
+                    {% for documento in documentos %}
+                        <option value="{{ documento.id_doc }}">{{ documento.titulo_doc }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label for="usuarioAsignador" class="form-label">Usuario Asignador</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
+                <select name="id_usu_asignador" class="form-control" id="usuarioAsignador" required>
+                    <option value="">Seleccione un usuario asignador</option>
+                    {% for usuario in usuarios %}
+                        <option value="{{ usuario.id_usu }}">{{ usuario.nombre_usu }} {{ usuario.apellido_usu }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label for="usuarioAsignado" class="form-label">Usuario Asignado</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <select name="id_usu_asignado" class="form-control" id="usuarioAsignado" required>
+                    <option value="">Seleccione un usuario asignado</option>
+                    {% for usuario in usuarios %}
+                        <option value="{{ usuario.id_usu }}">{{ usuario.nombre_usu }} {{ usuario.apellido_usu }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label for="fechaLimite" class="form-label">Fecha Límite</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-calendar-day"></i></span>
+                <input type="date" name="fecha_limite_asi" class="form-control" id="fechaLimite" required>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-success btn-lg"><i class="fas fa-save"></i> Guardar</button>
+        <button type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+    </div>
+</form>
+
+<style>
+    .input-group-text {
+        background-color: rgb(48, 154, 36);
+        color: white;
+    }
+
+    .input-group-text i {
+        transition: color 0.3s ease;
+    }
+
+    .input-group-text:hover i {
+        color: #ffffff;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+</style>

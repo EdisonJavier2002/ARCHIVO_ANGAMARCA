@@ -1,0 +1,140 @@
+{% extends "plantilla.html" %}
+{% load static %}
+
+{% block body %}
+<br><br><br><br>
+<div class="container" style="max-width: 1200px;">
+    <div class="card shadow-lg border-0 rounded-4" style="background-color: #eef1f6;">
+        <div class="card-header text-white text-center" style="background-color: #007bff;">
+            <h3 class="fw-bold mb-0">Listado de Asignaciones de Tiempo</h3>
+        </div>
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-3">
+                <button class="btn btn-success btn-lg" id="nuevaAsignacionBtn" data-url="{% url 'nuevaAsignacion' %}" data-bs-toggle="modal" data-bs-target="#asignacionModal">
+                    <i class="fas fa-plus-circle"></i> Agregar Asignación
+                </button>
+            </div>
+            <div class="table-responsive">
+                <div class="container p-3 border rounded" style="background-color: white;">
+                    <table class="table table-hover align-middle" id="tbl-asignaciones">
+                        <thead class="text-white" style="background-color: #343a40;">
+                            <tr>
+                                <th>ID</th>
+                                <th>Documento</th>
+                                <th>Usuario Asignador</th>
+                                <th>Usuario Asignado</th>
+                                <th>Fecha Límite</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for asignacion in asignaciones %}
+                            <tr>
+                                <td class="text-center">{{ asignacion.id_asi }}</td>
+                                <td>{{ asignacion.id_doc.titulo_doc }}</td>
+                                <td>{{ asignacion.id_usu_asignador.nombre_usu }} {{ asignacion.id_usu_asignador.apellido_usu }}</td>
+                                <td>{{ asignacion.id_usu_asignado.nombre_usu }} {{ asignacion.id_usu_asignado.apellido_usu }}</td>
+                                <td>{{ asignacion.fecha_limite_asi|date:"d/m/Y" }}</td>
+                                <td class="text-center">
+                                    <button class="btn btn-warning btn-sm editarAsignacionBtn" data-url="{% url 'editarAsignacion' asignacion.id_asi %}" data-bs-toggle="modal" data-bs-target="#asignacionModal">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <a href="{% url 'eliminarAsignacion' asignacion.id_asi %}" onclick="return confirm('¿Estás seguro?');" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Genérico -->
+<div class="modal fade" id="asignacionModal" tabindex="-1" aria-labelledby="asignacionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="asignacionModalLabel">Título del Modal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Inicializar DataTable
+        let table = new DataTable('#tbl-asignaciones', {
+            "responsive": true,
+            "autoWidth": false
+        });
+
+        // Cargar contenido dinámico en el modal
+        document.querySelectorAll('[data-bs-toggle="modal"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                const modalTitle = this.id === 'nuevaAsignacionBtn' ? 'Nueva Asignación' : 'Editar Asignación';
+
+                // Cambiar el título del modal
+                document.getElementById('asignacionModalLabel').textContent = modalTitle;
+
+                // Cargar contenido dinámico
+                fetch(url)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('modalContent').innerHTML = html;
+                    })
+                    .catch(error => {
+                        document.getElementById('modalContent').innerHTML = '<p class="text-danger">Error al cargar el contenido.</p>';
+                        console.error('Error al cargar el modal:', error);
+                    });
+            });
+        });
+
+        // Limpiar contenido del modal al cerrarlo
+        document.getElementById('asignacionModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('modalContent').innerHTML = '';
+        });
+    });
+</script>
+
+<style>
+    /* Estilo para el efecto hover en las filas de la tabla */
+    #tbl-asignaciones tbody tr:hover {
+        background-color: #007bff; /* Fondo azul claro cuando pasa el mouse */
+        color: white; /* Cambia el color del texto a blanco cuando pasa el mouse */
+        cursor: pointer; /* Cambia el cursor a puntero para indicar que es interactivo */
+    }
+
+    /* Cambia el color de texto o bordes de las celdas al pasar el mouse */
+    #tbl-asignaciones tbody tr:hover td {
+        background-color: #007bff; /* Fondo azul claro en las celdas al pasar el mouse */
+        color: white; /* Cambia el color del texto a blanco en las celdas */
+    }
+
+    /* Estilo para los bordes de las celdas */
+    #tbl-asignaciones th, #tbl-asignaciones td {
+        border: 2px solid #000000; /* Bordes más gruesos y de color negro */
+    }
+
+    /* Estilo para la cabecera de la tabla */
+    #tbl-asignaciones thead {
+        background-color: #343a40; /* Fondo oscuro para la cabecera */
+        color: white; /* Color blanco para el texto */
+    }
+
+    /* Estilo para el fondo de la tabla */
+    .table-responsive {
+        border: 2px solid #000000; /* Añadir un borde negro a la tabla completa */
+        border-radius: 8px; /* Bordes redondeados en la tabla */
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,172 @@
+<!-- Formulario de Nuevo Documento -->
+<form action="{% url 'guardarDocumento' %}" method="post" id="frm_nuevo_documento" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <!-- Columna 1 -->
+        <div class="col-md-6 mb-3">
+            <label for="titulo" class="form-label">Título</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-heading"></i></span>
+                <input type="text" name="titulo_doc" class="form-control" id="titulo" placeholder="Ingrese el título" required>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-align-left"></i></span>
+                <textarea name="descripcion_doc" class="form-control" id="descripcion" placeholder="Ingrese la descripción" rows="3"></textarea>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label for="tipo" class="form-label">Tipo de Documento</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-file-alt"></i></span>
+                <select name="tipo_doc" class="form-control" id="tipo" required>
+                    <option value="informe">Informe</option>
+                    <option value="acta">Acta</option>
+                    <option value="resolucion">Resolución</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label for="categoria" class="form-label">Categoría</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                <select name="id_cat" class="form-control" id="categoria" required>
+                    <option value="">Seleccione una categoría</option>
+                    {% for categoria in categorias %}
+                        <option value="{{ categoria.id_cat }}">{{ categoria.nombre_cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label for="usuario" class="form-label">Usuario Asignado</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <select name="id_usu" class="form-control" id="usuario" required>
+                    <option value="">Seleccione un usuario</option>
+                    {% for usuario in usuarios %}
+                        <option value="{{ usuario.id_usu }}">{{ usuario.nombre_usu }} {{ usuario.apellido_usu }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label for="estado" class="form-label">Estado</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-exclamation-circle"></i></span>
+                <select name="estado_doc" class="form-control" id="estado">
+                    <option value="en tiempo">En Tiempo</option>
+                    <option value="retrasado">Retrasado</option>
+                    <option value="incumplido">Incumplido</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Fechas solo para informes -->
+        <div class="col-md-6 mb-3" id="fechaSubida">
+            <label for="fecha_subida" class="form-label">Fecha de Subida</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-calendar-day"></i></span>
+                <input type="date" name="fecha_subida_doc" class="form-control" id="fecha_subida">
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3" id="fechaAsignacion">
+            <label for="fecha_asignacion" class="form-label">Fecha de Asignación</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
+                <input type="date" name="fecha_asignacion_doc" class="form-control" id="fecha_asignacion">
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3" id="fechaLimite">
+            <label for="fecha_limite" class="form-label">Fecha Límite</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                <input type="date" name="fecha_limite_doc" class="form-control" id="fecha_limite">
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3" id="fechaEntrega">
+            <label for="fecha_entrega" class="form-label">Fecha de Entrega</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
+                <input type="date" name="fecha_entrega_doc" class="form-control" id="fecha_entrega">
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-success btn-lg"><i class="fas fa-save"></i> Guardar</button>
+        <button type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+    </div>
+</form>
+
+<script>
+    // Aquí se puede agregar cualquier lógica JavaScript adicional, por ejemplo, para mostrar/ocultar campos basados en el tipo de documento.
+    document.addEventListener("DOMContentLoaded", function () {
+        const tipoDoc = document.getElementById("tipo");
+        const fechaSubida = document.getElementById("fechaSubida");
+        const fechaAsignacion = document.getElementById("fechaAsignacion");
+        const fechaLimite = document.getElementById("fechaLimite");
+        const fechaEntrega = document.getElementById("fechaEntrega");
+
+        tipoDoc.addEventListener("change", function () {
+            if (tipoDoc.value === "informe") {
+                fechaSubida.style.display = "block";
+                fechaAsignacion.style.display = "block";
+                fechaLimite.style.display = "block";
+                fechaEntrega.style.display = "block";
+            } else {
+                fechaSubida.style.display = "none";
+                fechaAsignacion.style.display = "none";
+                fechaLimite.style.display = "none";
+                fechaEntrega.style.display = "none";
+            }
+        });
+
+        tipoDoc.dispatchEvent(new Event("change"));
+    });
+</script>
+
+<style>
+    .input-group-text {
+        background-color: rgb(48, 154, 36);
+        color: white;
+    }
+
+    .input-group-text i {
+        transition: color 0.3s ease;
+    }
+
+    .input-group-text:hover i {
+        color: #ffffff;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+</style>

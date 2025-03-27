@@ -1,0 +1,129 @@
+{% extends "plantilla.html" %}
+{% load static %}
+
+{% block body %}
+<br><br><br><br>
+<div class="container" style="max-width: 1200px;">
+    <div class="card shadow-lg border-0 rounded-4" style="background-color: #eef1f6;">
+        <div class="card-header text-white text-center" style="background-color: #007bff;">
+            <h3 class="fw-bold mb-0">Listado de Categorías</h3>
+        </div>
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-3">
+                <button class="btn btn-success btn-lg" id="nuevaCategoriaBtn" data-url="{% url 'nuevaCategoria' %}" data-bs-toggle="modal" data-bs-target="#categoriaModal">
+                    <i class="fas fa-plus-circle"></i> Agregar Categoría
+                </button>
+            </div>
+            <div class="table-responsive">
+                <div class="container p-3 border rounded" style="background-color: white;">
+                    <table class="table table-hover align-middle" id="tbl-categorias">
+                        <thead class="text-white" style="background-color: #343a40;">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for categoria in categorias %}
+                            <tr>
+                                <td class="text-center">{{ categoria.id_cat }}</td>
+                                <td>{{ categoria.nombre_cat }}</td>
+                                <td class="text-center">
+                                    <button class="btn btn-warning btn-sm editarCategoriaBtn" data-url="{% url 'editarCategoria' categoria.id_cat %}" data-bs-toggle="modal" data-bs-target="#categoriaModal">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <a href="{% url 'eliminarCategoria' categoria.id_cat %}" onclick="return confirm('¿Estás seguro?');" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Genérico -->
+<div class="modal fade" id="categoriaModal" tabindex="-1" aria-labelledby="categoriaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="categoriaModalLabel">Título del Modal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Inicializar DataTable
+        let table = new DataTable('#tbl-categorias', {
+            "responsive": true,
+            "autoWidth": false
+        });
+
+        // Cargar contenido dinámico en el modal
+        document.querySelectorAll('[data-bs-toggle="modal"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                const modalTitle = this.id === 'nuevaCategoriaBtn' ? 'Nueva Categoría' : 'Editar Categoría';
+
+                // Cambiar el título del modal
+                document.getElementById('categoriaModalLabel').textContent = modalTitle;
+
+                // Cargar contenido dinámico
+                fetch(url)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('modalContent').innerHTML = html;
+                    })
+                    .catch(error => {
+                        document.getElementById('modalContent').innerHTML = '<p class="text-danger">Error al cargar el contenido.</p>';
+                        console.error('Error al cargar el modal:', error);
+                    });
+            });
+        });
+
+        // Limpiar contenido del modal al cerrarlo
+        document.getElementById('categoriaModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('modalContent').innerHTML = '';
+        });
+    });
+</script>
+
+<style>
+    #tbl-categorias tbody tr:hover {
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+    }
+
+    #tbl-categorias tbody tr:hover td {
+        background-color: #007bff;
+        color: white;
+    }
+
+    #tbl-categorias th, #tbl-categorias td {
+        border: 2px solid #000000;
+    }
+
+    #tbl-categorias thead {
+        background-color: #343a40;
+        color: white;
+    }
+
+    .table-responsive {
+        border: 2px solid #000000;
+        border-radius: 8px;
+    }
+</style>
+
+{% endblock %}
