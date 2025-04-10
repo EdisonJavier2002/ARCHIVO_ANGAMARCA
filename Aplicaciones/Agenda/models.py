@@ -31,6 +31,7 @@ class Documento(models.Model):
         max_length=50,
         choices=[('informe', 'Informe'), ('acta', 'Acta'), ('resolucion', 'Resolución')],
     )
+    archivo_doc = models.FileField(upload_to='documentos/', null=True, blank=True)  # Nuevo campo para subir archivos
     id_cat = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
     fecha_subida_doc = models.DateTimeField(auto_now_add=True) #solo para informes
     fecha_asignacion_doc = models.DateField(null=True, blank=True) #solo para informes

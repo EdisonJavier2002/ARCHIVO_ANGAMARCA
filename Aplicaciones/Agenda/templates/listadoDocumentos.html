@@ -15,51 +15,61 @@
                 </button>
             </div>
             <div class="table-responsive">
-                <div class="container p-3 border rounded" style="background-color: white;">
-                    <table class="table table-hover align-middle" id="tbl-documentos">
-                        <thead class="text-white" style="background-color: #343a40;">
-                            <tr>
-                                <th>ID</th>
-                                <th>Título</th>
-                                <th>Descripción</th>
-                                <th>Tipo</th>
-                                <th>Categoría</th>
-                                <th>Usuario</th>
-                                <th>Estado</th>
-                                <th>Fecha Subida</th>
-                                <th>Fecha Asignación</th>
-                                <th>Fecha Limite</th>
-                                <th>Fecha Entrega</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for documento in documentos %}
-                            <tr>
-                                <td class="text-center">{{ documento.id_doc }}</td>
-                                <td>{{ documento.titulo_doc }}</td>
-                                <td>{{ documento.descripcion_doc }}</td>
-                                <td>{{ documento.tipo_doc }}</td>
-                                <td>{{ documento.id_cat.nombre_cat }}</td>
-                                <td>{{ documento.id_usu.nombre_usu }} {{ documento.id_usu.apellido_usu }}</td>
-                                <td>{{ documento.estado_doc }}</td>
-                                <td>{{ documento.fecha_subida_doc|date:"d/m/Y H:i" }}</td>
-                                <td>{{ documento.fecha_asignacion_doc|date:"d/m/Y" }}</td>
-                                <td>{{ documento.fecha_limite_doc|date:"d/m/Y" }}</td>
-                                <td>{{ documento.fecha_entrega_doc|date:"d/m/Y" }}</td>
-                                <td class="text-center">
-                                    <button class="btn btn-warning btn-sm editarDocumentoBtn" data-url="{% url 'editarDocumento' documento.id_doc %}" data-bs-toggle="modal" data-bs-target="#documentoModal">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <a href="{% url 'eliminarDocumento' documento.id_doc %}" onclick="return confirm('¿Estás seguro?');" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                <table class="table table-hover align-middle" id="tbl-documentos">
+                    <thead class="text-white" style="background-color: #343a40;">
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Descripción</th>
+                            <th>Tipo</th>
+                            <th>Categoría</th>
+                            <th>Archivo</th>
+                            <th>Usuario</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for documento in documentos %}
+                        <tr>
+                            <td class="text-center">{{ documento.id_doc }}</td>
+                            <td>{{ documento.titulo_doc }}</td>
+                            <td>{{ documento.descripcion_doc }}</td>
+                            <td>{{ documento.tipo_doc }}</td>
+                            <td>{{ documento.id_cat.nombre_cat }}</td>
+                            <td>
+                                {% if documento.archivo_doc %}
+                                    <!-- Ícono del documento con enlace para abrir en nueva pestaña -->
+                                    <div class="text-center">
+                                        <a href="{{ documento.archivo_doc.url }}" target="_blank" class="d-block">
+                                            <i class="fas fa-file-alt fa-3x text-primary"></i>
+                                        </a>
+                                        <a href="{{ documento.archivo_doc.url }}" target="_blank" class="d-block text-decoration-none text-dark">
+                                            {{ documento.archivo_doc.name|slice:"10:" }}
+                                        </a>
+                                        <!-- Botón para descargar el documento -->
+                                        <a href="{{ documento.archivo_doc.url }}" download class="btn btn-secondary btn-sm mt-2">
+                                            <i class="fas fa-download"></i> Descargar
+                                        </a>
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted">No disponible</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ documento.id_usu.nombre_usu }} {{ documento.id_usu.apellido_usu }}</td>
+                            <td>{{ documento.estado_doc }}</td>
+                            <td class="text-center">
+                                <button class="btn btn-warning btn-sm editarDocumentoBtn" data-url="{% url 'editarDocumento' documento.id_doc %}" data-bs-toggle="modal" data-bs-target="#documentoModal">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <a href="{% url 'eliminarDocumento' documento.id_doc %}" onclick="return confirm('¿Estás seguro?');" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -85,7 +95,7 @@
         // Inicializar DataTable
         let table = new DataTable('#tbl-documentos', {
             "responsive": true,
-            "autoWidth": false
+            "autoWidth": false,
         });
 
         // Cargar contenido dinámico en el modal
@@ -116,37 +126,4 @@
         });
     });
 </script>
-
-<style>
-    /* Estilo para el efecto hover en las filas de la tabla */
-    #tbl-documentos tbody tr:hover {
-        background-color: #007bff; /* Fondo azul claro cuando pasa el mouse */
-        color: white; /* Cambia el color del texto a blanco cuando pasa el mouse */
-        cursor: pointer; /* Cambia el cursor a puntero para indicar que es interactivo */
-    }
-
-    /* Cambia el color de texto o bordes de las celdas al pasar el mouse */
-    #tbl-documentos tbody tr:hover td {
-        background-color: #007bff; /* Fondo azul claro en las celdas al pasar el mouse */
-        color: white; /* Cambia el color del texto a blanco en las celdas */
-    }
-
-    /* Estilo para los bordes de las celdas */
-    #tbl-documentos th, #tbl-documentos td {
-        border: 2px solid #000000; /* Bordes más gruesos y de color negro */
-    }
-
-    /* Estilo para la cabecera de la tabla */
-    #tbl-documentos thead {
-        background-color: #343a40; /* Fondo oscuro para la cabecera */
-        color: white; /* Color blanco para el texto */
-    }
-
-    /* Estilo para el fondo de la tabla */
-    .table-responsive {
-        border: 2px solid #000000; /* Añadir un borde negro a la tabla completa */
-        border-radius: 8px; /* Bordes redondeados en la tabla */
-    }
-</style>
-
 {% endblock %}

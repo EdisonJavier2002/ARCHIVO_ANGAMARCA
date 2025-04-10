@@ -1,5 +1,5 @@
 <!-- Formulario de Editar Documento -->
-<form action="{% url 'procesarActualizacionDocumento' %}" method="post" id="frm_editar_documento">
+<form action="{% url 'procesarActualizacionDocumento' %}" method="post" enctype="multipart/form-data" id="frm_editar_documento">
     {% csrf_token %}
     <input type="hidden" name="id_doc" value="{{ documentoEditar.id_doc }}">
 
@@ -47,6 +47,17 @@
                     {% endfor %}
                 </select>
             </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label for="archivo" class="form-label">Archivo</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-file-upload"></i></span>
+                <input type="file" name="archivo_doc" class="form-control" id="archivo">
+            </div>
+            {% if documentoEditar.archivo_doc %}
+                <p>Archivo actual: <a href="{{ documentoEditar.archivo_doc.url }}" target="_blank">Descargar</a></p>
+            {% endif %}
         </div>
 
         <!-- Usuario -->

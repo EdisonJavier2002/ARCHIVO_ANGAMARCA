@@ -255,6 +255,8 @@ def listadoDocumentos(request):
 # Eliminar documento
 def eliminarDocumento(request, id):
     documentoEliminar = get_object_or_404(Documento, id_doc=id)
+    if documentoEliminar.archivo_doc:  # Eliminar el archivo físico si existe
+        documentoEliminar.archivo_doc.delete()
     documentoEliminar.delete()
     messages.success(request, "Documento eliminado exitosamente.")
     return redirect('listadoDocumentos')
@@ -281,6 +283,7 @@ def guardarDocumento(request):
         id_cat = request.POST.get('id_cat', None)
         id_usu = request.POST.get('id_usu', None)
         estado = request.POST.get('estado_doc', 'en tiempo')
+        archivo = request.FILES.get('archivo_doc', None)  # Obtener el archivo subido
 
         # Validaciones
         if not titulo or not tipo or not id_usu:
@@ -294,7 +297,8 @@ def guardarDocumento(request):
             tipo_doc=tipo,
             id_cat=Categoria.objects.get(id_cat=id_cat) if id_cat else None,
             id_usu=Usuario.objects.get(id_usu=id_usu),
-            estado_doc=estado
+            estado_doc=estado,
+            archivo_doc=archivo  # Guardar el archivo
         )
         nuevo_documento.save()
 
@@ -315,6 +319,7 @@ def procesarActualizacionDocumento(request):
         id_cat = request.POST.get('id_cat', None)
         id_usu = request.POST.get('id_usu', None)
         estado = request.POST.get('estado_doc', 'en tiempo')
+        archivo = request.FILES.get('archivo_doc', None)  # Obtener el archivo subido
 
         if not titulo or not tipo or not id_usu:
             messages.error(request, "Título, tipo de documento y usuario son obligatorios.")
@@ -327,6 +332,12 @@ def procesarActualizacionDocumento(request):
         documento.id_cat = Categoria.objects.get(id_cat=id_cat) if id_cat else None
         documento.id_usu = Usuario.objects.get(id_usu=id_usu)
         documento.estado_doc = estado
+
+        # Si se sube un nuevo archivo, eliminar el anterior y guardar el nuevo
+        if archivo:
+            if documento.archivo_doc:  # Eliminar el archivo existente si hay uno
+                documento.archivo_doc.delete()
+            documento.archivo_doc = archivo
 
         documento.save()
         messages.success(request, "Documento actualizado exitosamente.")
